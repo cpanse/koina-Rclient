@@ -1,5 +1,7 @@
-// C++ grpc client demo
+// C++ grpc client demo 2023-04-30
+// Christian Panse <cp@fgcz.ethz.ch>
 // https://github.com/cpanse/dlomix-Rclient
+// adapted from https://github.com/triton-inference-server/client/blob/main/src/c%2B%2B/examples/simple_grpc_string_infer_client.cc // Copyright (c) 2020-2021, NVIDIA CORPORATION. All rights reserved.
 
 #include <getopt.h>
 #include <unistd.h>
@@ -76,8 +78,9 @@ Usage(char** argv, const std::string& msg = std::string())
 int
 main(int argc, char** argv)
 {
+  int batch_size = 2;
   bool verbose = false;
-  std::string url("fgcz-h-480:8500");
+  std::string url("fgcz-h-480:9990");
   tc::Headers http_headers;
   uint32_t client_timeout = 0;
   bool use_ssl = false;
@@ -149,58 +152,94 @@ main(int argc, char** argv)
           &client, url, verbose, use_ssl, ssl_options, keepalive_options),
       "unable to create grpc client");
 
-  std::cout << "ALIVE" << std::endl;
   // Create the data for the two input tensors. Initialize the first
   // to unique integers and the second to all ones.
-  std::vector<int32_t> input0_data(16);
-  std::vector<int32_t> input1_data(16);
-  for (size_t i = 0; i < 16; ++i) {
-    input0_data[i] = i;
-    input1_data[i] = 1;
+  std::vector<std::string> input0_data(batch_size);
+  std::vector<int32_t> input1_data(batch_size);
+  std::vector<int32_t> input2_data(batch_size);
+  std::vector<int64_t> input3_data(batch_size);
+
+  for (size_t i = 0; i < batch_size; ++i) {
+    input0_data[i] = "AAAAAAAAAAAAKAKM[UNIMOD:21]";
+    input1_data[i] = 25;
+    input2_data[i] = 2;
+    input3_data[i] = 1;
   }
 
-  std::vector<int64_t> shape{1, 16};
+  std::vector<int64_t> shape{batch_size, 1};
 
   // Initialize the inputs with the data.
   tc::InferInput* input0;
   tc::InferInput* input1;
+  tc::InferInput* input2;
+  tc::InferInput* input3;
 
+// create
   FAIL_IF_ERR(
-      tc::InferInput::Create(&input0, "INPUT0", shape, "INT32"),
+      tc::InferInput::Create(&input0, "peptides_in_str:0", shape, "BYTES"),
       "unable to get INPUT0");
   std::shared_ptr<tc::InferInput> input0_ptr;
   input0_ptr.reset(input0);
+
   FAIL_IF_ERR(
-      tc::InferInput::Create(&input1, "INPUT1", shape, "INT32"),
+      tc::InferInput::Create(&input1, "collision_energy_in:0", shape, "INT32"),
       "unable to get INPUT1");
   std::shared_ptr<tc::InferInput> input1_ptr;
   input1_ptr.reset(input1);
 
   FAIL_IF_ERR(
-      input0_ptr->AppendRaw(
-          reinterpret_cast<uint8_t*>(&input0_data[0]),
-          input0_data.size() * sizeof(int32_t)),
+      tc::InferInput::Create(&input2, "precursor_charge_in_int:0", shape, "INT32"),
+      "unable to get INPUT2");
+  std::shared_ptr<tc::InferInput> input2_ptr;
+  input2_ptr.reset(input2);
+
+  FAIL_IF_ERR(
+      tc::InferInput::Create(&input3, "instrument_indices:0", shape, "INT64"),
+      "unable to get INPUT3");
+  std::shared_ptr<tc::InferInput> input3_ptr;
+  input3_ptr.reset(input3);
+
+
+/// assign
+  FAIL_IF_ERR(
+      input0_ptr->AppendFromString(input0_data),
       "unable to set data for INPUT0");
+
   FAIL_IF_ERR(
       input1_ptr->AppendRaw(
           reinterpret_cast<uint8_t*>(&input1_data[0]),
           input1_data.size() * sizeof(int32_t)),
       "unable to set data for INPUT1");
 
-  // Generate the outputs to be requested.
-  tc::InferRequestedOutput* output0;
-  tc::InferRequestedOutput* output1;
+  FAIL_IF_ERR(
+      input2_ptr->AppendRaw(
+          reinterpret_cast<uint8_t*>(&input2_data[0]),
+          input2_data.size() * sizeof(int32_t)),
+      "unable to set data for INPUT2");
+
 
   FAIL_IF_ERR(
-      tc::InferRequestedOutput::Create(&output0, "OUTPUT0"),
+      input3_ptr->AppendRaw(
+          reinterpret_cast<uint8_t*>(&input3_data[0]),
+          input3_data.size() * sizeof(int64_t)),
+      "unable to set data for INPUT3");
+
+
+  // Generate the outputs to be requested.
+  tc::InferRequestedOutput* output0;
+  //tc::InferRequestedOutput* output1;
+
+  FAIL_IF_ERR(
+      tc::InferRequestedOutput::Create(&output0, "out/Reshape:0"),
       "unable to get 'OUTPUT0'");
   std::shared_ptr<tc::InferRequestedOutput> output0_ptr;
   output0_ptr.reset(output0);
-  FAIL_IF_ERR(
-      tc::InferRequestedOutput::Create(&output1, "OUTPUT1"),
-      "unable to get 'OUTPUT1'");
-  std::shared_ptr<tc::InferRequestedOutput> output1_ptr;
-  output1_ptr.reset(output1);
+
+//  FAIL_IF_ERR(
+//      tc::InferRequestedOutput::Create(&output1, "OUTPUT1"),
+//      "unable to get 'OUTPUT1'");
+//  std::shared_ptr<tc::InferRequestedOutput> output1_ptr;
+//  output1_ptr.reset(output1);
 
 
   // The inference settings. Will be using default for now.
@@ -208,9 +247,10 @@ main(int argc, char** argv)
   options.model_version_ = model_version;
   options.client_timeout_ = client_timeout;
 
-  std::vector<tc::InferInput*> inputs = {input0_ptr.get(), input1_ptr.get()};
-  std::vector<const tc::InferRequestedOutput*> outputs = {output0_ptr.get(),
-                                                          output1_ptr.get()};
+  std::vector<tc::InferInput*> inputs = {input0_ptr.get(), input1_ptr.get(), input2_ptr.get(), input3_ptr.get()};
+  std::vector<const tc::InferRequestedOutput*> outputs = {output0_ptr.get()};
+//  std::vector<const tc::InferRequestedOutput*> outputs = {output0_ptr.get(),
+//                                                          output1_ptr.get()};
 
   tc::InferResult* results;
   FAIL_IF_ERR(
@@ -218,12 +258,14 @@ main(int argc, char** argv)
       "unable to run model");
   std::shared_ptr<tc::InferResult> results_ptr;
   results_ptr.reset(results);
+ // std::cout << "ALIVE OUTPUT" << std::endl;
 
   // Validate the results...
-  ValidateShapeAndDatatype("OUTPUT0", results_ptr);
-  ValidateShapeAndDatatype("OUTPUT1", results_ptr);
+  //ValidateShapeAndDatatype("OUTPUT0", results_ptr);
+  //ValidateShapeAndDatatype("OUTPUT1", results_ptr);
 
   // Get pointers to the result returned...
+/*
   int32_t* output0_data;
   size_t output0_byte_size;
   FAIL_IF_ERR(
@@ -263,10 +305,11 @@ main(int argc, char** argv)
       exit(1);
     }
   }
+  */
 
   // Get full response
   std::cout << results_ptr->DebugString() << std::endl;
-  std::cout << "PASS : KeepAlive" << std::endl;
+ // std::cout << "PASS : KeepAlive" << std::endl;
 
   return 0;
 }
