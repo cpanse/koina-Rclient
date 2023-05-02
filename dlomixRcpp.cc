@@ -51,11 +51,12 @@ ValidateShapeAndDatatype(
 }  // namespace
 
 // [[Rcpp::export]]
-Rcpp::NumericVector dlomix_AlphaPept_ms2_generic_ensemble( Rcpp::StringVector peptide, Rcpp::LogicalVector verbose )
+Rcpp::NumericVector dlomix_AlphaPept_ms2_generic_ensemble( Rcpp::StringVector peptide, int ce = 25, int instrument = 0, bool verbose = false)
 {
   long int batch_size = 1;
   //bool verbose = false;
-  std::string url("fgcz-h-480:9990");
+  std::string url("localhost:9990");
+  //std::string url("fgcz-h-480:9990");
   tc::Headers http_headers;
   uint32_t client_timeout = 0;
   bool use_ssl = false;
@@ -75,7 +76,7 @@ Rcpp::NumericVector dlomix_AlphaPept_ms2_generic_ensemble( Rcpp::StringVector pe
   std::unique_ptr<tc::InferenceServerGrpcClient> client;
   FAIL_IF_ERR(
       tc::InferenceServerGrpcClient::Create(
-          &client, url, verbose[0], use_ssl, ssl_options, keepalive_options),
+          &client, url, verbose, use_ssl, ssl_options, keepalive_options),
       "unable to create grpc client");
 
   // Create the data for the two input tensors. Initialize the first
@@ -87,9 +88,16 @@ Rcpp::NumericVector dlomix_AlphaPept_ms2_generic_ensemble( Rcpp::StringVector pe
 
   for (auto i = 0; i < batch_size; ++i) {
     input0_data[i] = peptide[0];
-    input1_data[i] = 25;
+    input1_data[i] = ce;
     input2_data[i] = 2;
-    input3_data[i] = 1;
+
+//     https://github.com/MannLabs/alphapeptdeep/blob/f30d57f07e1e14213144e2e7b407d90c11254882/peptdeep/constants/model_const.yaml#L116 <https://github.com/MannLabs/alphapeptdeep/blob/f30d57f07e1e14213144e2e7b407d90c11254882/peptdeep/constants/model_const.yaml#L116>
+    // 0 - QE
+    // 1 - Lumos
+    // 2 - timsTOF
+    // 3 SciexTOF
+
+    input3_data[i] = instrument;
   }
 
   std::vector<int64_t> shape{batch_size, 1};
@@ -153,12 +161,19 @@ Rcpp::NumericVector dlomix_AlphaPept_ms2_generic_ensemble( Rcpp::StringVector pe
 
   // Generate the outputs to be requested.
   tc::InferRequestedOutput* output0;
+  tc::InferRequestedOutput* output1;
 
   FAIL_IF_ERR(
-      tc::InferRequestedOutput::Create(&output0, "out/Reshape:0"),
-      "unable to get 'OUTPUT0'");
+      tc::InferRequestedOutput::Create(&output0, "out/Reshape:1"),
+      "unable to get 'OUTPUT1'");
   std::shared_ptr<tc::InferRequestedOutput> output0_ptr;
   output0_ptr.reset(output0);
+
+  FAIL_IF_ERR(
+      tc::InferRequestedOutput::Create(&output1, "out/Reshape:2"),
+      "unable to get 'OUTPUT2'");
+  std::shared_ptr<tc::InferRequestedOutput> output1_ptr;
+  output1_ptr.reset(output1);
 
 
   // The inference settings. Will be using default for now.
@@ -167,7 +182,7 @@ Rcpp::NumericVector dlomix_AlphaPept_ms2_generic_ensemble( Rcpp::StringVector pe
   options.client_timeout_ = client_timeout;
 
   std::vector<tc::InferInput*> inputs = {input0_ptr.get(), input1_ptr.get(), input2_ptr.get(), input3_ptr.get()};
-  std::vector<const tc::InferRequestedOutput*> outputs = {output0_ptr.get()};
+  std::vector<const tc::InferRequestedOutput*> outputs = {output0_ptr.get(), output1_ptr.get()};
 
   tc::InferResult* results;
   FAIL_IF_ERR(
@@ -178,21 +193,29 @@ Rcpp::NumericVector dlomix_AlphaPept_ms2_generic_ensemble( Rcpp::StringVector pe
 
  // std::cout << results_ptr->DebugString() << std::endl;
   // Validate the results...
-  ValidateShapeAndDatatype("out/Reshape:0", results_ptr);
+ // ValidateShapeAndDatatype("out/Reshape:0", results_ptr);
 
   // Get output
   float* output0_data;
   size_t output0_byte_size;
   FAIL_IF_ERR(
-    results_ptr->RawData("out/Reshape:0",
+    results_ptr->RawData("out/Reshape:1",
       (const uint8_t**)&output0_data, &output0_byte_size),
-      "unable to get result data for 'OUTPUT0'");  
+      "unable to get result data for 'OUTPUT1'");  
+
+  float* output1_data;
+  size_t output1_byte_size;
+  FAIL_IF_ERR(
+    results_ptr->RawData("out/Reshape:2",
+      (const uint8_t**)&output1_data, &output1_byte_size),
+      "unable to get result data for 'OUTPUT2'");  
 
   //Rcpp::Rcout << "output0_byte_size\t=\t" << output0_byte_size<< std::endl;
  
-  Rcpp::NumericVector out(output0_byte_size / 4);
-  for (size_t i = 0; i < output0_byte_size / 4; ++i) {
+  Rcpp::NumericVector out(output0_byte_size / 2);
+  for (size_t i = 0; i < output1_byte_size / 4; ++i) {
 	  out[i] = output0_data[i];
+	  out[(output1_byte_size / 4) + i + 1] = output1_data[i];
   }
 
   return out;

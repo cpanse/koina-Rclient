@@ -8,16 +8,17 @@
 #include <iostream>
 #include <string>
 #include "grpc_client.h"
+#include <Rcpp.h>
 
 namespace tc = triton::client;
 
 #define FAIL_IF_ERR(X, MSG)                                        \
   {                                                                \
     tc::Error err = (X);                                           \
-    if (!err.IsOk()) {                                             \
-      std::cerr << "error: " << (MSG) << ": " << err << std::endl; \
-      exit(1);                                                     \
-    }                                                              \
+    if (!err.IsOk()) {                                                 \
+      Rcpp::Rcerr << "error: " << (MSG) << ": " << err << std::endl; \
+      exit(1);                                                         \
+    }                                                                  \
   }
 
 namespace {
@@ -31,7 +32,7 @@ ValidateShapeAndDatatype(
       result->Shape(name, &shape), "unable to get shape for '" + name + "'");
   // Validate shape
   if ((shape.size() != 3) || (shape[0] < 1) || (shape[1] < 1)) {
-    std::cerr << "error: received incorrect shapes for '" << name << "'"
+    Rcpp::Rcerr << "error: received incorrect shapes for '" << name << "'"
               << std::endl;
    exit(1);
   }
@@ -49,14 +50,27 @@ ValidateShapeAndDatatype(
 
 }  // namespace
 
-int
-main(int argc, char** argv)
+//' AlphaPept_ms2_generic_ensemble
+//'
+//' This function returns a predicted fragment ion spectrum
+//' of a given peptide sequence.
+//'
+//' @param peptide  amino acid sequence
+//' @param ce  the collision energy
+//' @param instrument  an integer defining the instrument: 0 - QE; 1 - Lumos; 2 - timsTOF; 3 - SciexTOF
+//' @param verbose provides grpc proteobuf output
+//' 
+//' @examples
+//'   dlomix::dlomix_AlphaPept_ms2_generic_ensemble("LGGNEQVTR")       
+//' 
+//' @export
+// [[Rcpp::export]]
+Rcpp::NumericVector dlomix_AlphaPept_ms2_generic_ensemble( Rcpp::StringVector peptide, int ce = 25, int instrument = 0, bool verbose = false)
 {
-  long int batch_size = 7000;
-  bool verbose = false;
-  //std::string url("dlomix.fgcz.uzh.ch:8080");
+  long int batch_size = 1;
+  //bool verbose = false;
   std::string url("localhost:9990");
-  //std::string url("fgcz-h-480:8500");
+  //std::string url("fgcz-h-480:9990");
   tc::Headers http_headers;
   uint32_t client_timeout = 0;
   bool use_ssl = false;
@@ -87,12 +101,14 @@ main(int argc, char** argv)
   std::vector<int64_t> input3_data(batch_size);
 
   for (auto i = 0; i < batch_size; ++i) {
-    input0_data[i] = "DAILLVVSNPVDVLSYVTYK";
-    input1_data[i] = 25;
+    input0_data[i] = peptide[0];
+    input1_data[i] = ce;
     input2_data[i] = 2;
-    input3_data[i] = 1;
+
+//     https://github.com/MannLabs/alphapeptdeep/blob/f30d57f07e1e14213144e2e7b407d90c11254882/peptdeep/constants/model_const.yaml#L116 <https://github.com/MannLabs/alphapeptdeep/blob/f30d57f07e1e14213144e2e7b407d90c11254882/peptdeep/constants/model_const.yaml#L116>
+
+    input3_data[i] = instrument;
   }
-  #include "sp.h"
 
   std::vector<int64_t> shape{batch_size, 1};
 
@@ -155,12 +171,19 @@ main(int argc, char** argv)
 
   // Generate the outputs to be requested.
   tc::InferRequestedOutput* output0;
+  tc::InferRequestedOutput* output1;
 
   FAIL_IF_ERR(
       tc::InferRequestedOutput::Create(&output0, "out/Reshape:1"),
-      "unable to get 'OUTPUT0'");
+      "unable to get 'OUTPUT1'");
   std::shared_ptr<tc::InferRequestedOutput> output0_ptr;
   output0_ptr.reset(output0);
+
+  FAIL_IF_ERR(
+      tc::InferRequestedOutput::Create(&output1, "out/Reshape:2"),
+      "unable to get 'OUTPUT2'");
+  std::shared_ptr<tc::InferRequestedOutput> output1_ptr;
+  output1_ptr.reset(output1);
 
 
   // The inference settings. Will be using default for now.
@@ -169,34 +192,41 @@ main(int argc, char** argv)
   options.client_timeout_ = client_timeout;
 
   std::vector<tc::InferInput*> inputs = {input0_ptr.get(), input1_ptr.get(), input2_ptr.get(), input3_ptr.get()};
-  std::vector<const tc::InferRequestedOutput*> outputs = {output0_ptr.get()};
+  std::vector<const tc::InferRequestedOutput*> outputs = {output0_ptr.get(), output1_ptr.get()};
 
   tc::InferResult* results;
-  std::cout << "BEGIN QUERY" << std::endl;
   FAIL_IF_ERR(
       client->Infer(&results, options, inputs, outputs, http_headers),
       "unable to run model");
   std::shared_ptr<tc::InferResult> results_ptr;
   results_ptr.reset(results);
-  std::cout << "END QUERY" << std::endl;
 
  // std::cout << results_ptr->DebugString() << std::endl;
   // Validate the results...
-  //ValidateShapeAndDatatype("out/Reshape:1", results_ptr);
-  //PrintOutput("out/Reshape:0", results_ptr);
+ // ValidateShapeAndDatatype("out/Reshape:0", results_ptr);
 
   // Get output
   float* output0_data;
   size_t output0_byte_size;
-  FAIL_IF_ERR(results_ptr->RawData("out/Reshape:1", (const uint8_t**)&output0_data, &output0_byte_size), "unable to get result data for 'OUTPUT0'");  
+  FAIL_IF_ERR(
+    results_ptr->RawData("out/Reshape:1",
+      (const uint8_t**)&output0_data, &output0_byte_size),
+      "unable to get result data for 'OUTPUT1'");  
 
-  std::cout << "output0_byte_size\t=\t" << output0_byte_size<< std::endl;
+  float* output1_data;
+  size_t output1_byte_size;
+  FAIL_IF_ERR(
+    results_ptr->RawData("out/Reshape:2",
+      (const uint8_t**)&output1_data, &output1_byte_size),
+      "unable to get result data for 'OUTPUT2'");  
+
+  //Rcpp::Rcout << "output0_byte_size\t=\t" << output0_byte_size<< std::endl;
  
-  /*
-  for (size_t i = 0; i < output0_byte_size / 4; ++i) {
-	  std::cout << i<<"\t" << output0_data[i] << std::endl;
+  Rcpp::NumericVector out(output0_byte_size / 2);
+  for (size_t i = 0; i < output1_byte_size / 4; ++i) {
+	  out[i] = output0_data[i];
+	  out[(output1_byte_size / 4) + i + 1] = output1_data[i];
   }
-  */
 
-  return 0;
+  return out;
 }

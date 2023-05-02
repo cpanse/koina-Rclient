@@ -1,0 +1,6 @@
+# System requirements
+
+## Linux (debian:12/ubuntu:20.04)
+
+include libgrpcclient.so path into your LD_LIBRARY_PATH
+

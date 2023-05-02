@@ -1,0 +1,26 @@
+Package: dlomix
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Author: Who wrote it
+Maintainer: The package maintainer <cp@fgcz.ethz.ch>
+Description: Provides an DLOmix interface for R.
+Encoding: UTF-8
+LazyData: true
+Imports: Rcpp (>= 1.0.10)
+LinkingTo: Rcpp
+Suggests:
+    BiocStyle (>= 2.5),
+    knitr,
+    protViz (>= 0.7),
+    rawrr,
+    rmarkdown,
+    tartare (>= 1.5),
+    testthat
+License: GPL-3
+SystemRequirements: libgrpcclient.so
+URL: https://github.com/cpanse/dlomix-Rclient
+BugReports: https://github.com/cpanse/dlomix-Rclient/issues
+RoxygenNote: 7.2.3
+biocViews: MassSpectrometry, Proteomics
+VignetteBuilder: knitr

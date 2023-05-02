@@ -5,7 +5,7 @@ import tritonclient.grpc as grpcclient
 import sys
 
 if __name__ == '__main__':
-    server_url = 'fgcz-h-480:8500'
+    server_url = 'fgcz-h-480:9990'
     model_name = "AlphaPept_ms2_generic_ensemble"
     #model_name = "ms2pip_ensemble"
     out_layer = 'out/Reshape:0'
@@ -36,7 +36,7 @@ if __name__ == '__main__':
     
     outputs.append(grpcclient.InferRequestedOutput(out_layer))
 
-    for x in range(100):
+    for x in range(1):
         start = time.time()
         result = triton_client.infer(model_name, inputs=inputs, outputs=[])
         end = time.time()
