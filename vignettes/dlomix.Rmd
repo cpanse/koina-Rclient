@@ -1,0 +1,44 @@
+---
+title: "The dlomix R package"
+author:
+- name: Christian Panse
+  affiliation:
+    - &id Functional Genomics Center Zurich - Functional Genomics Center Zurich (FGCZ) - University of Zurich | ETH Zurich, Winterthurerstrasse 190, CH-8057 Zurich, Switzerland
+    - Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, CH-1015 Lausanne, Switzerland
+  email: cp@fgcz.ethz.ch
+package: dlomix
+abstract: |
+  This vignette provides ...
+output:
+  BiocStyle::html_document:
+    toc_float: true
+bibliography: dlomix.bib
+vignette: >
+  %\usepackage[utf8]{inputenc}
+  %\VignetteIndexEntry{primer}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+urlcolor: blue
+---
+
+```{r style, echo = FALSE, results = 'asis'}
+BiocStyle::markdown()
+knitr::opts_chunk$set(fig.wide = TRUE, fig.retina = 3, error=FALSE)
+```
+
+# Hello, world!
+
+
+```{r}
+iRTpeptides <- c("LGGNEQVTR", "YILAGVENSK", "GTFIIDPGGVIR", "GTFIIDPAAVIR",
+                 "GAGSSEPVTGLDAK", "TPVISGGPYEYR", "VEATFGVDESNAK",
+                 "TPVITGAPYEYR", "DGLDAASYYAPVR", "ADVTPADFSEWSK",
+                 "LFLQFGAQGSPFLK")
+
+Sys.setenv("LD_LIBRARY_PATH" = "/home/cp/src/v2.34.0dev.clients/lib/")
+
+library(dlomix)
+lapply(iRTpeptides, function(peptide){
+    dlomix::dlomix_AlphaPept_ms2_generic_ensemble(peptide)
+})
+```
