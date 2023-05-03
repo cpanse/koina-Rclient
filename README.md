@@ -4,6 +4,7 @@
 ## how to run the server?
 
 
+### Option 1
 follow the install:
 github.com:wilhelm-lab/koina.git
 
@@ -11,6 +12,10 @@ github.com:wilhelm-lab/koina.git
 docker compose up serving -d
 docker compose logs serving -f
 ```
+
+### Option 2
+use a public one, e.g., dlomix.fgcz.uzh.ch:8080
+
 
 
 ## how to set the library path?
