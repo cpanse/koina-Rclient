@@ -11,8 +11,8 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // dlomix_AlphaPept_ms2_generic_ensemble
-Rcpp::NumericVector dlomix_AlphaPept_ms2_generic_ensemble(Rcpp::StringVector peptide, int ce, int instrument, bool verbose);
-RcppExport SEXP _dlomix_dlomix_AlphaPept_ms2_generic_ensemble(SEXP peptideSEXP, SEXP ceSEXP, SEXP instrumentSEXP, SEXP verboseSEXP) {
+Rcpp::NumericVector dlomix_AlphaPept_ms2_generic_ensemble(Rcpp::StringVector peptide, int ce, int instrument, bool verbose, std::string url);
+RcppExport SEXP _dlomix_dlomix_AlphaPept_ms2_generic_ensemble(SEXP peptideSEXP, SEXP ceSEXP, SEXP instrumentSEXP, SEXP verboseSEXP, SEXP urlSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -20,13 +20,14 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type ce(ceSEXP);
     Rcpp::traits::input_parameter< int >::type instrument(instrumentSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
-    rcpp_result_gen = Rcpp::wrap(dlomix_AlphaPept_ms2_generic_ensemble(peptide, ce, instrument, verbose));
+    Rcpp::traits::input_parameter< std::string >::type url(urlSEXP);
+    rcpp_result_gen = Rcpp::wrap(dlomix_AlphaPept_ms2_generic_ensemble(peptide, ce, instrument, verbose, url));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_dlomix_dlomix_AlphaPept_ms2_generic_ensemble", (DL_FUNC) &_dlomix_dlomix_AlphaPept_ms2_generic_ensemble, 4},
+    {"_dlomix_dlomix_AlphaPept_ms2_generic_ensemble", (DL_FUNC) &_dlomix_dlomix_AlphaPept_ms2_generic_ensemble, 5},
     {NULL, NULL, 0}
 };
 

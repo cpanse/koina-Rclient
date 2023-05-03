@@ -8,7 +8,8 @@ dlomix_AlphaPept_ms2_generic_ensemble(
   peptide,
   ce = 25L,
   instrument = 0L,
-  verbose = FALSE
+  verbose = FALSE,
+  url = "localhost:9990"
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ dlomix_AlphaPept_ms2_generic_ensemble(
 \item{instrument}{an integer defining the instrument: 0 - QE; 1 - Lumos; 2 - timsTOF; 3 - SciexTOF}
 
 \item{verbose}{provides grpc proteobuf output}
+
+\item{url}{E.g., localhost:9990 or dlomix.fgcz.uzh.ch:8500.}
 }
 \description{
 This function returns a predicted fragment ion spectrum

@@ -10,12 +10,13 @@
 #' @param ce  the collision energy
 #' @param instrument  an integer defining the instrument: 0 - QE; 1 - Lumos; 2 - timsTOF; 3 - SciexTOF
 #' @param verbose provides grpc proteobuf output
+#' @param url E.g., localhost:9990 or dlomix.fgcz.uzh.ch:8500.
 #' 
 #' @examples
 #'   dlomix::dlomix_AlphaPept_ms2_generic_ensemble("LGGNEQVTR")       
 #' 
 #' @export
-dlomix_AlphaPept_ms2_generic_ensemble <- function(peptide, ce = 25L, instrument = 0L, verbose = FALSE) {
-    .Call(`_dlomix_dlomix_AlphaPept_ms2_generic_ensemble`, peptide, ce, instrument, verbose)
+dlomix_AlphaPept_ms2_generic_ensemble <- function(peptide, ce = 25L, instrument = 0L, verbose = FALSE, url = "localhost:9990") {
+    .Call(`_dlomix_dlomix_AlphaPept_ms2_generic_ensemble`, peptide, ce, instrument, verbose, url)
 }
 
