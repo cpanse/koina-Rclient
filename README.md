@@ -4,13 +4,12 @@
 ## how to run the server?
 
 
+follow the install:
+github.com:wilhelm-lab/koina.git
+
 ```
-docker run -ti \
---gpus all \
---shm-size 2G \
--p 9990:8500 \
--p 9991:8501 \
-ghcr.io/wilhelm-lab/dlomix-serving:latest
+docker compose up serving -d
+docker compose logs serving -f
 ```
 
 
