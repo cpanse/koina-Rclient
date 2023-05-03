@@ -50,15 +50,13 @@ https://github.com/triton-inference-server/server/blob/main/docs/user_guide/mode
 
 
 ```
-R --no-save < dlomixRcpp.R 
-```
+#R
 
-
-of note setting
-
-```
+##  otherwise the library can not resolve all entries!
 Sys.setenv("PKG_CXXFLAGS"="-I/home/cpanse/src/v2.34.0dev.clients/include/ -Wall -pedantic -std=c++17 -O3")
 Sys.setenv("PKG_LIBS"="-L /home/cpanse/src/v2.34.0dev.clients/lib/ -lgrpcclient")
-```
 
-is essential; otherwise the library can not resolve all entries!
+Rcpp::sourceCpp("src/rcpp_alphapept.cpp ", verbose = TRUE, rebuild = TRUE, cacheDir = "dlomixRcpp")
+## call 
+out <- dlomix_AlphaPept_ms2_generic_ensemble("ELVISK")
+```
