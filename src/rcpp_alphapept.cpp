@@ -59,17 +59,19 @@ ValidateShapeAndDatatype(
 //' @param ce  the collision energy
 //' @param instrument  an integer defining the instrument: 0 - QE; 1 - Lumos; 2 - timsTOF; 3 - SciexTOF
 //' @param verbose provides grpc proteobuf output
+//' @param url E.g., localhost:9990 or dlomix.fgcz.uzh.ch:8500.
 //' 
 //' @examples
 //'   dlomix::dlomix_AlphaPept_ms2_generic_ensemble("LGGNEQVTR")       
 //' 
 //' @export
 // [[Rcpp::export]]
-Rcpp::NumericVector dlomix_AlphaPept_ms2_generic_ensemble( Rcpp::StringVector peptide, int ce = 25, int instrument = 0, bool verbose = false)
+Rcpp::NumericVector dlomix_AlphaPept_ms2_generic_ensemble( Rcpp::StringVector peptide, int ce = 25, int instrument = 0, bool verbose = false, std::string url = "localhost:9990")
 {
   long int batch_size = 1;
   //bool verbose = false;
-  std::string url("localhost:9990");
+  //std::string url(grpc_url);
+  //std::string url("localhost:9990");
   //std::string url("fgcz-h-480:9990");
   tc::Headers http_headers;
   uint32_t client_timeout = 0;
