@@ -40,3 +40,8 @@
 ^simple_grpc_keepalive_client.cc
 ^sp.h
 ^util.R
+^.*\.o$
+.*RcppAlphapept.o
+.*RcppProsit.o
+^.*\.so$
+^.*nfs.*$

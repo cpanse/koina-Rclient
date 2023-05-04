@@ -12,13 +12,13 @@
 
 namespace tc = triton::client;
 
-#define FAIL_IF_ERR(X, MSG)                                        \
-  {                                                                \
-    tc::Error err = (X);                                           \
-    if (!err.IsOk()) {                                                 \
+#define FAIL_IF_ERR(X, MSG)                                          \
+  {                                                                  \
+    tc::Error err = (X);                                             \
+    if (!err.IsOk()) {                                               \
       Rcpp::Rcerr << "error: " << (MSG) << ": " << err << std::endl; \
-      exit(1);                                                         \
-    }                                                                  \
+      Rcpp::stop("stop.");                                           \
+    }                                                                \
   }
 
 
