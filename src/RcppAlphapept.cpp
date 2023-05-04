@@ -57,6 +57,7 @@ ValidateShapeAndDatatype(
 //' of a given peptide sequence.
 //'
 //' @param peptide amino acid sequence, e.g., \code{"LGGNEQVTR"}
+//' @param precursorCharge precursor charge, e.g., 2.
 //' @param collisionEnergy the collision energy in [eV]?, default is 25.
 //' @param instrument  an integer defining the instrument: 0 - QE;
 //' 1 - Lumos; 2 - timsTOF; 3 - SciexTOF.
@@ -71,6 +72,7 @@ ValidateShapeAndDatatype(
 Rcpp::NumericVector alphaPeptMs2GenericEnsemble(
   Rcpp::StringVector peptide,
   float collisionEnergy = 25,
+  int precursorCharge = 2,
   int instrument = 0,
   bool verbose = false,
   std::string url = "dlomix.fgcz.uzh.ch:8080")
@@ -106,7 +108,7 @@ Rcpp::NumericVector alphaPeptMs2GenericEnsemble(
   for (auto i = 0; i < batch_size; ++i) {
     input0_data[i] = peptide[0];
     input1_data[i] = collisionEnergy;
-    input2_data[i] = 2;
+    input2_data[i] = precursorCharge;
 
 //     https://github.com/MannLabs/alphapeptdeep/blob/f30d57f07e1e14213144e2e7b407d90c11254882/peptdeep/constants/model_const.yaml#L116 <https://github.com/MannLabs/alphapeptdeep/blob/f30d57f07e1e14213144e2e7b407d90c11254882/peptdeep/constants/model_const.yaml#L116>
 

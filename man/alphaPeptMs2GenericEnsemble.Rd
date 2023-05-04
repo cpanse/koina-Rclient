@@ -7,6 +7,7 @@
 alphaPeptMs2GenericEnsemble(
   peptide,
   collisionEnergy = 25,
+  precursorCharge = 2L,
   instrument = 0L,
   verbose = FALSE,
   url = "dlomix.fgcz.uzh.ch:8080"
@@ -16,6 +17,8 @@ alphaPeptMs2GenericEnsemble(
 \item{peptide}{amino acid sequence, e.g., \code{"LGGNEQVTR"}}
 
 \item{collisionEnergy}{the collision energy in [eV]?, default is 25.}
+
+\item{precursorCharge}{precursor charge, e.g., 2.}
 
 \item{instrument}{an integer defining the instrument: 0 - QE;
 1 - Lumos; 2 - timsTOF; 3 - SciexTOF.}

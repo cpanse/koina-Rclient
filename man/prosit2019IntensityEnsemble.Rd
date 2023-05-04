@@ -7,6 +7,7 @@
 prosit2019IntensityEnsemble(
   peptide,
   collisionEnergy = 25,
+  precursorCharge = 2L,
   verbose = FALSE,
   url = "dlomix.fgcz.uzh.ch:8080"
 )
@@ -15,6 +16,8 @@ prosit2019IntensityEnsemble(
 \item{peptide}{amino acid sequence, e.g., \code{"LGGNEQVTR"}}
 
 \item{collisionEnergy}{the collision energy in [eV]?, default is 25.}
+
+\item{precursorCharge}{precursor charge, e.g., 2.}
 
 \item{verbose}{provides grpc proteobuf output.}
 

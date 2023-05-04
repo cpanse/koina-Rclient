@@ -7,6 +7,7 @@
 #' of a given peptide sequence.
 #'
 #' @param peptide amino acid sequence, e.g., \code{"LGGNEQVTR"}
+#' @param precursorCharge precursor charge, e.g., 2.
 #' @param collisionEnergy the collision energy in [eV]?, default is 25.
 #' @param instrument  an integer defining the instrument: 0 - QE;
 #' 1 - Lumos; 2 - timsTOF; 3 - SciexTOF.
@@ -17,8 +18,8 @@
 #'   dlomix::alphaPeptMs2GenericEnsemble("LGGNEQVTR")       
 #' 
 #' @export
-alphaPeptMs2GenericEnsemble <- function(peptide, collisionEnergy = 25, instrument = 0L, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
-    .Call(`_dlomix_alphaPeptMs2GenericEnsemble`, peptide, collisionEnergy, instrument, verbose, url)
+alphaPeptMs2GenericEnsemble <- function(peptide, collisionEnergy = 25, precursorCharge = 2L, instrument = 0L, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
+    .Call(`_dlomix_alphaPeptMs2GenericEnsemble`, peptide, collisionEnergy, precursorCharge, instrument, verbose, url)
 }
 
 #' Prosit_2019_intensity_ensemble
@@ -32,7 +33,19 @@ alphaPeptMs2GenericEnsemble <- function(peptide, collisionEnergy = 25, instrumen
 #'   dlomix::prosit2019IntensityEnsemble("LGGNEQVTR")       
 #' 
 #' @export
-prosit2019IntensityEnsemble <- function(peptide, collisionEnergy = 25, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
-    .Call(`_dlomix_prosit2019IntensityEnsemble`, peptide, collisionEnergy, verbose, url)
+prosit2019IntensityEnsemble <- function(peptide, collisionEnergy = 25, precursorCharge = 2L, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
+    .Call(`_dlomix_prosit2019IntensityEnsemble`, peptide, collisionEnergy, precursorCharge, verbose, url)
+}
+
+#' Prosit_2019_irt_ensemble
+#'
+#' @inheritParams alphaPeptMs2GenericEnsemble
+#'
+#' @examples
+#'   dlomix::prosit2019IrtEnsemble("LGGNEQVTR")       
+#' 
+#' @export
+prosit2019IrtEnsemble <- function(peptide, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
+    .Call(`_dlomix_prosit2019IrtEnsemble`, peptide, verbose, url)
 }
 

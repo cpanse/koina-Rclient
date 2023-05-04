@@ -11,38 +11,54 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // alphaPeptMs2GenericEnsemble
-Rcpp::NumericVector alphaPeptMs2GenericEnsemble(Rcpp::StringVector peptide, float collisionEnergy, int instrument, bool verbose, std::string url);
-RcppExport SEXP _dlomix_alphaPeptMs2GenericEnsemble(SEXP peptideSEXP, SEXP collisionEnergySEXP, SEXP instrumentSEXP, SEXP verboseSEXP, SEXP urlSEXP) {
+Rcpp::NumericVector alphaPeptMs2GenericEnsemble(Rcpp::StringVector peptide, float collisionEnergy, int precursorCharge, int instrument, bool verbose, std::string url);
+RcppExport SEXP _dlomix_alphaPeptMs2GenericEnsemble(SEXP peptideSEXP, SEXP collisionEnergySEXP, SEXP precursorChargeSEXP, SEXP instrumentSEXP, SEXP verboseSEXP, SEXP urlSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::StringVector >::type peptide(peptideSEXP);
     Rcpp::traits::input_parameter< float >::type collisionEnergy(collisionEnergySEXP);
+    Rcpp::traits::input_parameter< int >::type precursorCharge(precursorChargeSEXP);
     Rcpp::traits::input_parameter< int >::type instrument(instrumentSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< std::string >::type url(urlSEXP);
-    rcpp_result_gen = Rcpp::wrap(alphaPeptMs2GenericEnsemble(peptide, collisionEnergy, instrument, verbose, url));
+    rcpp_result_gen = Rcpp::wrap(alphaPeptMs2GenericEnsemble(peptide, collisionEnergy, precursorCharge, instrument, verbose, url));
     return rcpp_result_gen;
 END_RCPP
 }
 // prosit2019IntensityEnsemble
-Rcpp::NumericVector prosit2019IntensityEnsemble(Rcpp::StringVector peptide, float collisionEnergy, bool verbose, std::string url);
-RcppExport SEXP _dlomix_prosit2019IntensityEnsemble(SEXP peptideSEXP, SEXP collisionEnergySEXP, SEXP verboseSEXP, SEXP urlSEXP) {
+Rcpp::NumericVector prosit2019IntensityEnsemble(Rcpp::StringVector peptide, float collisionEnergy, int precursorCharge, bool verbose, std::string url);
+RcppExport SEXP _dlomix_prosit2019IntensityEnsemble(SEXP peptideSEXP, SEXP collisionEnergySEXP, SEXP precursorChargeSEXP, SEXP verboseSEXP, SEXP urlSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::StringVector >::type peptide(peptideSEXP);
     Rcpp::traits::input_parameter< float >::type collisionEnergy(collisionEnergySEXP);
+    Rcpp::traits::input_parameter< int >::type precursorCharge(precursorChargeSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< std::string >::type url(urlSEXP);
-    rcpp_result_gen = Rcpp::wrap(prosit2019IntensityEnsemble(peptide, collisionEnergy, verbose, url));
+    rcpp_result_gen = Rcpp::wrap(prosit2019IntensityEnsemble(peptide, collisionEnergy, precursorCharge, verbose, url));
+    return rcpp_result_gen;
+END_RCPP
+}
+// prosit2019IrtEnsemble
+Rcpp::NumericVector prosit2019IrtEnsemble(Rcpp::StringVector peptide, bool verbose, std::string url);
+RcppExport SEXP _dlomix_prosit2019IrtEnsemble(SEXP peptideSEXP, SEXP verboseSEXP, SEXP urlSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::StringVector >::type peptide(peptideSEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    Rcpp::traits::input_parameter< std::string >::type url(urlSEXP);
+    rcpp_result_gen = Rcpp::wrap(prosit2019IrtEnsemble(peptide, verbose, url));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_dlomix_alphaPeptMs2GenericEnsemble", (DL_FUNC) &_dlomix_alphaPeptMs2GenericEnsemble, 5},
-    {"_dlomix_prosit2019IntensityEnsemble", (DL_FUNC) &_dlomix_prosit2019IntensityEnsemble, 4},
+    {"_dlomix_alphaPeptMs2GenericEnsemble", (DL_FUNC) &_dlomix_alphaPeptMs2GenericEnsemble, 6},
+    {"_dlomix_prosit2019IntensityEnsemble", (DL_FUNC) &_dlomix_prosit2019IntensityEnsemble, 5},
+    {"_dlomix_prosit2019IrtEnsemble", (DL_FUNC) &_dlomix_prosit2019IrtEnsemble, 3},
     {NULL, NULL, 0}
 };
 
