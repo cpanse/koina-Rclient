@@ -26,19 +26,82 @@ BiocStyle::markdown()
 knitr::opts_chunk$set(fig.wide = TRUE, fig.retina = 3, error=FALSE)
 ```
 
-# Hello, world!
+
+# Initial
+
+```{r load}
+lp <- file.path(Sys.getenv("HOME"),
+                "src/v2.34.0dev.clients/lib/libgrpcclient.so")
+stopifnot(file.exists(lp))
+
+dyn.load(lp)
+library(dlomix)
+```
 
 
-```{r}
+# Compare predictions
+
+
+```{r hello}
 iRTpeptides <- c("LGGNEQVTR", "YILAGVENSK", "GTFIIDPGGVIR", "GTFIIDPAAVIR",
                  "GAGSSEPVTGLDAK", "TPVISGGPYEYR", "VEATFGVDESNAK",
                  "TPVITGAPYEYR", "DGLDAASYYAPVR", "ADVTPADFSEWSK",
                  "LFLQFGAQGSPFLK")
 
-Sys.setenv("LD_LIBRARY_PATH" = "/home/cp/src/v2.34.0dev.clients/lib/")
 
-library(dlomix)
-lapply(iRTpeptides, function(peptide){
-    dlomix::alphaPeptMs2GenericEnsemble(peptide)
+
+out <- lapply(iRTpeptides, function(peptide){
+  
+  op <- par(mar=c(7,5,7,2))
+  #peptide <- "LGGNEQVTR"
+  yIons <- protViz::fragmentIon(peptide)[[1]]$y[1:(nchar(peptide)-1)]
+  bIons <- protViz::fragmentIon(peptide)[[1]]$b[1:(nchar(peptide)-1)]
+  
+  names(yIons) <- paste0('y', seq(1, nchar(peptide) - 1))
+  names(bIons) <- paste0('b', seq(1, nchar(peptide) - 1))
+  
+  a <- dlomix::alphaPeptMs2GenericEnsemble(peptide,
+                                           collisionEnergy = 36, 
+                                           instrument = 0)
+ 
+  
+  ## retrieve mZ and intensities
+  n <- length(a)
+  mzIdx <- seq(n/2 + 1, n)
+  inIdx <- seq(1, n/2)
+  
+  ## determine y ion match
+  yIonFlagAlphaPept <- a[mzIdx][protViz::findNN(yIons, a[mzIdx])] - yIons < 0.01
+  bIonFlagAlphaPept <- a[mzIdx][protViz::findNN(bIons, a[mzIdx])] - bIons < 0.01
+  
+  plot(a[mzIdx], a[inIdx],
+       type = 'h',
+       xlab = 'm/Z',
+       ylab = 'relative intensities',
+       ylim = c(-1,1),
+       main = peptide, 
+       sub = "AlphaPept(top) / Prosit(buttom)",
+       axes = FALSE)
+  
+  axis(3, yIons[yIonFlagAlphaPept], names(yIons[yIonFlagAlphaPept]))
+  axis(3, bIons[bIonFlagAlphaPept], names(bIons[bIonFlagAlphaPept]))
+  
+  abline(h = 0)
+  p <- dlomix::prosit2019IntensityEnsemble(peptide, collisionEnergy = 36)
+  n <- nchar(peptide)
+  
+  ## retrieve mZ and intensities 
+  intensity <- p[seq(1,5 * n)]
+  mZ <- p[175 + seq(1,5 * n)]
+  idx <- mZ > 0
+  points(mZ[idx], -intensity[idx], type = 'h')
+  
+  ## determine y-ion match
+  yIonFlagProsit <- mZ[idx][protViz::findNN(yIons, mZ[idx])] - yIons < 0.01
+  bIonFlagProsit <- mZ[idx][protViz::findNN(bIons, mZ[idx])] - bIons < 0.01
+ 
+  axis(1, yIons[yIonFlagProsit], names(yIons[yIonFlagProsit]))
+  axis(1, bIons[bIonFlagProsit], names(bIons[bIonFlagProsit]))
+  
 })
 ```
