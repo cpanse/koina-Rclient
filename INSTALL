@@ -1,7 +1,9 @@
 # System requirements
 
+get `libgrpcclient` from  https://github.com/triton-inference-server/server/releases
+
 ## Linux (debian:12/ubuntu:20.04)
 
-https://github.com/triton-inference-server/server
 include libgrpcclient.so path into your LD_LIBRARY_PATH
+
 
