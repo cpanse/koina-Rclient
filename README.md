@@ -1,4 +1,4 @@
-# dlomix-Rclient
+# Rpkg client for DLOmix service
 
 
 ## how to run the server?
