@@ -39,10 +39,10 @@ library(dlomix)
 ```
 
 
-# Compare predictions
+# Compare Intensity Predictions
 
 
-```{r hello}
+```{r Ms2GenericEnsemble}
 iRTpeptides <- c("LGGNEQVTR", "YILAGVENSK", "GTFIIDPGGVIR", "GTFIIDPAAVIR",
                  "GAGSSEPVTGLDAK", "TPVISGGPYEYR", "VEATFGVDESNAK",
                  "TPVITGAPYEYR", "DGLDAASYYAPVR", "ADVTPADFSEWSK",
@@ -61,6 +61,7 @@ out <- lapply(iRTpeptides, function(peptide){
   names(bIons) <- paste0('b', seq(1, nchar(peptide) - 1))
   
   a <- dlomix::alphaPeptMs2GenericEnsemble(peptide,
+                                           precursorCharge = 2,
                                            collisionEnergy = 36, 
                                            instrument = 0)
  
@@ -87,7 +88,9 @@ out <- lapply(iRTpeptides, function(peptide){
   axis(3, bIons[bIonFlagAlphaPept], names(bIons[bIonFlagAlphaPept]))
   
   abline(h = 0)
-  p <- dlomix::prosit2019IntensityEnsemble(peptide, collisionEnergy = 36)
+  p <- dlomix::prosit2019IntensityEnsemble(peptide,
+                                           precursorCharge = 2,
+                                           collisionEnergy = 36)
   n <- nchar(peptide)
   
   ## retrieve mZ and intensities 
@@ -104,4 +107,16 @@ out <- lapply(iRTpeptides, function(peptide){
   axis(1, bIons[bIonFlagProsit], names(bIons[bIonFlagProsit]))
   
 })
+```
+
+## Compare iRT Predictions
+
+```{r iRTGenericEnsemble}
+irtSSRC <- protViz::ssrc(iRTpeptides)
+irtProsit <- sapply(iRTpeptides, dlomix::prosit2019IrtEnsemble)
+
+plot(irtProsit ~ irtSSRC, asp = 1)
+fit <- lm(irtProsit ~ irtSSRC)
+abline(fit)
+summary(fit)
 ```
