@@ -55,14 +55,15 @@ ValidateShapeAndDatatype(
 //' This function returns a predicted fragment ion spectrum
 //' of a given peptide sequence.
 //'
-//' @param peptide  amino acid sequence
-//' @param collisionEnergy the collision energy
-//' @param instrument  an integer defining the instrument: 0 - QE; 1 - Lumos; 2 - timsTOF; 3 - SciexTOF
-//' @param verbose provides grpc proteobuf output
-//' @param url E.g., localhost:9990 or dlomix.fgcz.uzh.ch:8080.
+//' @param peptide amino acid sequence, e.g., \code{"LGGNEQVTR"}
+//' @param collisionEnergy the collision energy in [eV]?, default is 25.
+//' @param instrument  an integer defining the instrument: 0 - QE;
+//' 1 - Lumos; 2 - timsTOF; 3 - SciexTOF.
+//' @param verbose provides grpc proteobuf output.
+//' @param url GRPC url, e.g., localhost:9990 or \url{dlomix.fgcz.uzh.ch:8080}.
 //' 
 //' @examples
-//'   dlomix::dlomix_AlphaPept_ms2_generic_ensemble("LGGNEQVTR")       
+//'   dlomix::alphaPeptMs2GenericEnsemble("LGGNEQVTR")       
 //' 
 //' @export
 // [[Rcpp::export]]
@@ -74,17 +75,11 @@ Rcpp::NumericVector alphaPeptMs2GenericEnsemble(
   std::string url = "dlomix.fgcz.uzh.ch:8080")
 {
   long int batch_size = 1;
-  //bool verbose = false;
-  //std::string url(grpc_url);
-  //std::string url("localhost:9990");
-  //std::string url("fgcz-h-480:9990");
   tc::Headers http_headers;
   uint32_t client_timeout = 0;
   bool use_ssl = false;
   tc::SslOptions ssl_options;
   tc::KeepAliveOptions keepalive_options;
-  // GRPC KeepAlive: https://grpc.github.io/grpc/cpp/md_doc_keepalive.html
-  //int keepalive_time_ms = INT_MAX;
 
   // We use a simple model that takes 4 input tensors of x charaters
   // each and returns 1 output tensors of shape1 * shape2 * shape3 FP32.
