@@ -1,10 +1,9 @@
 # Rpkg client for DLOmix service
 
+## FAQ
+### how to run the server?
 
-## how to run the server?
-
-
-### Option 1
+#### Option 1
 follow the install:
 github.com:wilhelm-lab/koina.git
 
@@ -13,12 +12,11 @@ docker compose up serving -d
 docker compose logs serving -f
 ```
 
-### Option 2
+#### Option 2
+
 use a public one, e.g., dlomix.fgcz.uzh.ch:8080
 
-
-
-## how to set the library path?
+### how to set the library path?
 
 ```
 $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/cpanse/src/v2.34.0dev.clients/lib/
@@ -39,15 +37,14 @@ cpanse@fgcz-h-480:~/src/github.com/cpanse/dlomix-Rclient  (main)> ldd dlomix
         libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007fa98c44f000)
 
 ```
+see also [INSTALL](INSTALL)
 
-## how to set the right data type?
-
+### how to set the right data type?
 
 https://github.com/triton-inference-server/server/blob/main/docs/user_guide/model_configuration.md
 
 
-## how to get the Rcpp example to work?
-
+### how to get the Rcpp example to work?
 
 ```
 #R
