@@ -27,20 +27,18 @@ namespace tc = triton::client;
 //' This function returns a predicted fragment ion spectrum
 //' of a given peptide sequence.
 //'
-//' @param peptide  amino acid sequence
-//' @param ce  the collision energy
-//' @param verbose provides grpc proteobuf output
-//' @param url E.g., localhost:9990 or dlomix.fgcz.uzh.ch:8500.
-//' 
+//' @inheritParams alphaPeptMs2GenericEnsemble
+//'
 //' @examples
-//'   dlomix::dlomix_Prosit_2019_intensity_ensemble("LGGNEQVTR")       
+//'   dlomix::prosit2019IntensityEnsemble("LGGNEQVTR")       
 //' 
 //' @export
 // [[Rcpp::export]]
-Rcpp::NumericVector dlomix_Prosit_2019_intensity_ensemble( Rcpp::StringVector peptide,
-  float ce = 25,
+Rcpp::NumericVector prosit2019IntensityEnsemble(
+  Rcpp::StringVector peptide,
+  float collisionEnergy = 25,
   bool verbose = false,
-  std::string url = "localhost:9990")
+  std::string url = "dlomix.fgcz.uzh.ch:8080")
 {
   long int batch_size = 1;
   tc::Headers http_headers;
@@ -69,7 +67,7 @@ Rcpp::NumericVector dlomix_Prosit_2019_intensity_ensemble( Rcpp::StringVector pe
   for (auto i = 0; i < batch_size; ++i) {
     input0_data[i] = peptide[0];
     input1_data[i] = 2;
-    input2_data[i] = ce;
+    input2_data[i] = collisionEnergy;
   }
 
   std::vector<int64_t> shape{batch_size, 1};

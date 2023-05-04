@@ -10,24 +10,39 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
-// dlomix_AlphaPept_ms2_generic_ensemble
-Rcpp::NumericVector dlomix_AlphaPept_ms2_generic_ensemble(Rcpp::StringVector peptide, int ce, int instrument, bool verbose, std::string url);
-RcppExport SEXP _dlomix_dlomix_AlphaPept_ms2_generic_ensemble(SEXP peptideSEXP, SEXP ceSEXP, SEXP instrumentSEXP, SEXP verboseSEXP, SEXP urlSEXP) {
+// alphaPeptMs2GenericEnsemble
+Rcpp::NumericVector alphaPeptMs2GenericEnsemble(Rcpp::StringVector peptide, float collisionEnergy, int instrument, bool verbose, std::string url);
+RcppExport SEXP _dlomix_alphaPeptMs2GenericEnsemble(SEXP peptideSEXP, SEXP collisionEnergySEXP, SEXP instrumentSEXP, SEXP verboseSEXP, SEXP urlSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::StringVector >::type peptide(peptideSEXP);
-    Rcpp::traits::input_parameter< int >::type ce(ceSEXP);
+    Rcpp::traits::input_parameter< float >::type collisionEnergy(collisionEnergySEXP);
     Rcpp::traits::input_parameter< int >::type instrument(instrumentSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< std::string >::type url(urlSEXP);
-    rcpp_result_gen = Rcpp::wrap(dlomix_AlphaPept_ms2_generic_ensemble(peptide, ce, instrument, verbose, url));
+    rcpp_result_gen = Rcpp::wrap(alphaPeptMs2GenericEnsemble(peptide, collisionEnergy, instrument, verbose, url));
+    return rcpp_result_gen;
+END_RCPP
+}
+// prosit2019IntensityEnsemble
+Rcpp::NumericVector prosit2019IntensityEnsemble(Rcpp::StringVector peptide, float collisionEnergy, bool verbose, std::string url);
+RcppExport SEXP _dlomix_prosit2019IntensityEnsemble(SEXP peptideSEXP, SEXP collisionEnergySEXP, SEXP verboseSEXP, SEXP urlSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::StringVector >::type peptide(peptideSEXP);
+    Rcpp::traits::input_parameter< float >::type collisionEnergy(collisionEnergySEXP);
+    Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
+    Rcpp::traits::input_parameter< std::string >::type url(urlSEXP);
+    rcpp_result_gen = Rcpp::wrap(prosit2019IntensityEnsemble(peptide, collisionEnergy, verbose, url));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_dlomix_dlomix_AlphaPept_ms2_generic_ensemble", (DL_FUNC) &_dlomix_dlomix_AlphaPept_ms2_generic_ensemble, 5},
+    {"_dlomix_alphaPeptMs2GenericEnsemble", (DL_FUNC) &_dlomix_alphaPeptMs2GenericEnsemble, 5},
+    {"_dlomix_prosit2019IntensityEnsemble", (DL_FUNC) &_dlomix_prosit2019IntensityEnsemble, 4},
     {NULL, NULL, 0}
 };
 

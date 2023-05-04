@@ -7,16 +7,31 @@
 #' of a given peptide sequence.
 #'
 #' @param peptide  amino acid sequence
-#' @param ce  the collision energy
+#' @param collisionEnergy the collision energy
 #' @param instrument  an integer defining the instrument: 0 - QE; 1 - Lumos; 2 - timsTOF; 3 - SciexTOF
 #' @param verbose provides grpc proteobuf output
-#' @param url E.g., localhost:9990 or dlomix.fgcz.uzh.ch:8500.
+#' @param url E.g., localhost:9990 or dlomix.fgcz.uzh.ch:8080.
 #' 
 #' @examples
 #'   dlomix::dlomix_AlphaPept_ms2_generic_ensemble("LGGNEQVTR")       
 #' 
 #' @export
-dlomix_AlphaPept_ms2_generic_ensemble <- function(peptide, ce = 25L, instrument = 0L, verbose = FALSE, url = "localhost:9990") {
-    .Call(`_dlomix_dlomix_AlphaPept_ms2_generic_ensemble`, peptide, ce, instrument, verbose, url)
+alphaPeptMs2GenericEnsemble <- function(peptide, collisionEnergy = 25, instrument = 0L, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
+    .Call(`_dlomix_alphaPeptMs2GenericEnsemble`, peptide, collisionEnergy, instrument, verbose, url)
+}
+
+#' Prosit_2019_intensity_ensemble
+#'
+#' This function returns a predicted fragment ion spectrum
+#' of a given peptide sequence.
+#'
+#' @inheritParams alphaPeptMs2GenericEnsemble
+#'
+#' @examples
+#'   dlomix::prosit2019IntensityEnsemble("LGGNEQVTR")       
+#' 
+#' @export
+prosit2019IntensityEnsemble <- function(peptide, collisionEnergy = 25, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
+    .Call(`_dlomix_prosit2019IntensityEnsemble`, peptide, collisionEnergy, verbose, url)
 }
 

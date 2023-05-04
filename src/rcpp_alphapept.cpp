@@ -56,17 +56,22 @@ ValidateShapeAndDatatype(
 //' of a given peptide sequence.
 //'
 //' @param peptide  amino acid sequence
-//' @param ce  the collision energy
+//' @param collisionEnergy the collision energy
 //' @param instrument  an integer defining the instrument: 0 - QE; 1 - Lumos; 2 - timsTOF; 3 - SciexTOF
 //' @param verbose provides grpc proteobuf output
-//' @param url E.g., localhost:9990 or dlomix.fgcz.uzh.ch:8500.
+//' @param url E.g., localhost:9990 or dlomix.fgcz.uzh.ch:8080.
 //' 
 //' @examples
 //'   dlomix::dlomix_AlphaPept_ms2_generic_ensemble("LGGNEQVTR")       
 //' 
 //' @export
 // [[Rcpp::export]]
-Rcpp::NumericVector dlomix_AlphaPept_ms2_generic_ensemble( Rcpp::StringVector peptide, int ce = 25, int instrument = 0, bool verbose = false, std::string url = "localhost:9990")
+Rcpp::NumericVector alphaPeptMs2GenericEnsemble(
+  Rcpp::StringVector peptide,
+  float collisionEnergy = 25,
+  int instrument = 0,
+  bool verbose = false,
+  std::string url = "dlomix.fgcz.uzh.ch:8080")
 {
   long int batch_size = 1;
   //bool verbose = false;
@@ -104,7 +109,7 @@ Rcpp::NumericVector dlomix_AlphaPept_ms2_generic_ensemble( Rcpp::StringVector pe
 
   for (auto i = 0; i < batch_size; ++i) {
     input0_data[i] = peptide[0];
-    input1_data[i] = ce;
+    input1_data[i] = collisionEnergy;
     input2_data[i] = 2;
 
 //     https://github.com/MannLabs/alphapeptdeep/blob/f30d57f07e1e14213144e2e7b407d90c11254882/peptdeep/constants/model_const.yaml#L116 <https://github.com/MannLabs/alphapeptdeep/blob/f30d57f07e1e14213144e2e7b407d90c11254882/peptdeep/constants/model_const.yaml#L116>

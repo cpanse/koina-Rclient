@@ -39,6 +39,6 @@ Sys.setenv("LD_LIBRARY_PATH" = "/home/cp/src/v2.34.0dev.clients/lib/")
 
 library(dlomix)
 lapply(iRTpeptides, function(peptide){
-    dlomix::dlomix_AlphaPept_ms2_generic_ensemble(peptide)
+    dlomix::alphaPeptMs2GenericEnsemble(peptide)
 })
 ```
