@@ -12,13 +12,13 @@ prosit2019IntensityEnsemble(
 )
 }
 \arguments{
-\item{peptide}{amino acid sequence}
+\item{peptide}{amino acid sequence, e.g., \code{"LGGNEQVTR"}}
 
-\item{collisionEnergy}{the collision energy}
+\item{collisionEnergy}{the collision energy in [eV]?, default is 25.}
 
-\item{verbose}{provides grpc proteobuf output}
+\item{verbose}{provides grpc proteobuf output.}
 
-\item{url}{E.g., localhost:9990 or dlomix.fgcz.uzh.ch:8080.}
+\item{url}{GRPC url, e.g., localhost:9990 or \url{dlomix.fgcz.uzh.ch:8080}.}
 }
 \description{
 This function returns a predicted fragment ion spectrum

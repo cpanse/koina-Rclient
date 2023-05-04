@@ -6,14 +6,15 @@
 #' This function returns a predicted fragment ion spectrum
 #' of a given peptide sequence.
 #'
-#' @param peptide  amino acid sequence
-#' @param collisionEnergy the collision energy
-#' @param instrument  an integer defining the instrument: 0 - QE; 1 - Lumos; 2 - timsTOF; 3 - SciexTOF
-#' @param verbose provides grpc proteobuf output
-#' @param url E.g., localhost:9990 or dlomix.fgcz.uzh.ch:8080.
+#' @param peptide amino acid sequence, e.g., \code{"LGGNEQVTR"}
+#' @param collisionEnergy the collision energy in [eV]?, default is 25.
+#' @param instrument  an integer defining the instrument: 0 - QE;
+#' 1 - Lumos; 2 - timsTOF; 3 - SciexTOF.
+#' @param verbose provides grpc proteobuf output.
+#' @param url GRPC url, e.g., localhost:9990 or \url{dlomix.fgcz.uzh.ch:8080}.
 #' 
 #' @examples
-#'   dlomix::dlomix_AlphaPept_ms2_generic_ensemble("LGGNEQVTR")       
+#'   dlomix::alphaPeptMs2GenericEnsemble("LGGNEQVTR")       
 #' 
 #' @export
 alphaPeptMs2GenericEnsemble <- function(peptide, collisionEnergy = 25, instrument = 0L, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
