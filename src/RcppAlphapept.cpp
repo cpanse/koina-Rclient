@@ -71,7 +71,7 @@ ValidateShapeAndDatatype(
 // [[Rcpp::export]]
 Rcpp::NumericVector alphaPeptMs2GenericEnsemble(
   Rcpp::StringVector peptide,
-  float collisionEnergy = 25,
+  float collisionEnergy = 0.25,
   int precursorCharge = 2,
   int instrument = 0,
   bool verbose = false,

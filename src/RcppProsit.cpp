@@ -36,7 +36,7 @@ namespace tc = triton::client;
 // [[Rcpp::export]]
 Rcpp::NumericVector prosit2019IntensityEnsemble(
   Rcpp::StringVector peptide,
-  float collisionEnergy = 25,
+  float collisionEnergy = 0.25,
   int precursorCharge = 2,
   bool verbose = false,
   std::string url = "dlomix.fgcz.uzh.ch:8080")

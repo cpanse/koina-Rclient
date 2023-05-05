@@ -38,6 +38,57 @@ dyn.load(lp)
 library(dlomix)
 ```
 
+# LKEATIQLDELNQK
+
+reproduce Fig.1d [@prosit2019]
+https://www.nature.com/articles/s41592-019-0426-7
+
+```{r}
+.plotPrositIntensity <- function(peptide, ...){
+  p <- dlomix::prosit2019IntensityEnsemble(peptide,
+      precursorCharge = 3,
+      collisionEnergy = 0.35)
+
+  n <- nchar(peptide)
+  
+  yIons <- protViz::fragmentIon(peptide)[[1]]$y[seq(1, n-1)]
+  bIons <- protViz::fragmentIon(peptide)[[1]]$b[seq(1, n-1)]
+  names(yIons) <- paste0('y', seq(1, n-1), "(1+)")
+  names(bIons) <- paste0('b', seq(1, n-1), "(1+)")
+
+  ## retrieve mZ and intensities 
+  intensity <- p[seq(1, 5 * n)]
+  mZ <- p[175 + seq(1, 5 * n)]
+  
+  idx <- order(mZ)
+  mZ <- mZ[idx]
+  intensity <- intensity[idx]
+  
+  ## determine b- and y-ion match
+  yIdx <- protViz::findNN(yIons, mZ)
+  yHit <- abs(mZ[yIdx] - yIons) < 0.1
+  
+  bIdx <- protViz::findNN(bIons, mZ)
+  bHit <- abs(mZ[bIdx] - bIons) < 0.1
+  
+  plot(intensity ~ mZ, type = 'h', ...)
+  
+  points(mZ[yIdx[yHit]], intensity[yIdx[yHit]],
+         col = 'red', type = 'h', lwd = 2.0)
+  
+  points(mZ[bIdx[yHit]], intensity[bIdx[bHit]],
+         col = 'cornflowerblue', type = 'h', lwd = 2.0)
+  
+  axis(3, mZ[yIdx[yHit]],  names(yHit[yHit]))
+  axis(1, mZ[bIdx[bHit]],  names(bHit[bHit]))
+
+} 
+
+peptide <- "LKEATIQLDELNQK"
+#peptide <- "GDLLQVM[UNIMOD:35]HEAFEK"
+ 
+.plotPrositIntensity(peptide, xlim = c(150, 1000), axes=FALSE)
+```
 
 # Compare Intensity Predictions
 
@@ -62,7 +113,7 @@ out <- lapply(iRTpeptides, function(peptide){
   
   a <- dlomix::alphaPeptMs2GenericEnsemble(peptide,
                                            precursorCharge = 2,
-                                           collisionEnergy = 36, 
+                                           collisionEnergy = 0.36, 
                                            instrument = 0)
  
   
@@ -90,7 +141,7 @@ out <- lapply(iRTpeptides, function(peptide){
   abline(h = 0)
   p <- dlomix::prosit2019IntensityEnsemble(peptide,
                                            precursorCharge = 2,
-                                           collisionEnergy = 36)
+                                           collisionEnergy = 0.36)
   n <- nchar(peptide)
   
   ## retrieve mZ and intensities 
