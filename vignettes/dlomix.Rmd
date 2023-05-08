@@ -1,5 +1,5 @@
 ---
-title: "The dlomix R package"
+title: "On Using the DLOmix service from R"
 author:
 - name: Christian Panse
   affiliation:
@@ -38,16 +38,23 @@ dyn.load(lp)
 library(dlomix)
 ```
 
-# LKEATIQLDELNQK
+# Hello, `LKEATIQLDELNQK`!
 
-reproduce Fig.1d [@prosit2019]
+
 https://www.nature.com/articles/s41592-019-0426-7
 
-```{r}
-.plotPrositIntensity <- function(peptide, ...){
+```{r hello}
+dlomix::prosit2019IntensityEnsemble("LKEATIQLDELNQK")
+```
+
+
+```{r LKEATIQLDELNQK, fig.retina=3, fig.height=6, fig.width=8, fig.cap="LKEATIQLDELNQK Prosit predicted MS2; reproduce Fig.1d [@prosit2019] https://www.nature.com/articles/s41592-019-0426-7"}
+## define some R helper function ...
+.plotPrositIntensity <- function(peptide, precursorCharge = 3,
+                                 collisionEnergy = 0.35, ...){
   p <- dlomix::prosit2019IntensityEnsemble(peptide,
-      precursorCharge = 3,
-      collisionEnergy = 0.35)
+      precursorCharge = precursorCharge,
+      collisionEnergy = collisionEnergy)
 
   n <- nchar(peptide)
   
@@ -57,8 +64,8 @@ https://www.nature.com/articles/s41592-019-0426-7
   names(bIons) <- paste0('b', seq(1, n-1), "(1+)")
 
   ## retrieve mZ and intensities 
-  intensity <- p[seq(1, 5 * n)]
-  mZ <- p[175 + seq(1, 5 * n)]
+  intensity <- p[seq(1, 6 * n)]
+  mZ <- p[175 + seq(1, 6 * n)]
   
   idx <- order(mZ)
   mZ <- mZ[idx]
@@ -87,87 +94,85 @@ https://www.nature.com/articles/s41592-019-0426-7
 peptide <- "LKEATIQLDELNQK"
 #peptide <- "GDLLQVM[UNIMOD:35]HEAFEK"
  
-.plotPrositIntensity(peptide, xlim = c(150, 1000), axes=FALSE)
+.plotPrositIntensity(peptide, xlim = c(150, 1000), ylim=c(0,1), axes=FALSE)
 ```
+
+```{r Fig1, echo=FALSE, out.width="100%", eval=TRUE, fig.cap="Screenshot of Fig.1d [@prosit2019] https://www.nature.com/articles/s41592-019-0426-7"}
+  knitr::include_graphics("PrositFig1d.jpg")
+```
+
 
 # Compare Intensity Predictions
 
+Now we use `r BiocStyle::Biocpkg('tartar')` raw file as used in [@rawrr].
 
 ```{r Ms2GenericEnsemble}
+rawfile <- "/home/cp/.cache/R/ExperimentHub/151e026f793b5c_4590.raw"
+i <- c(9594, 12677, 16136, 17193, 11113, 12788, 13204,
+       11884, 13868, 14551, 17612)
+S <- rawrr::readSpectrum(rawfile = rawfile, scan = i)
+
 iRTpeptides <- c("LGGNEQVTR", "YILAGVENSK", "GTFIIDPGGVIR", "GTFIIDPAAVIR",
                  "GAGSSEPVTGLDAK", "TPVISGGPYEYR", "VEATFGVDESNAK",
                  "TPVITGAPYEYR", "DGLDAASYYAPVR", "ADVTPADFSEWSK",
                  "LFLQFGAQGSPFLK")
 
-
-
-out <- lapply(iRTpeptides, function(peptide){
+sapply(c(1:11), function(idx){
+  massError <- (abs(((protViz::parentIonMass(iRTpeptides[idx]) + 1.007)/ 2) - S[[idx]]$pepmass))
   
-  op <- par(mar=c(7,5,7,2))
-  #peptide <- "LGGNEQVTR"
-  yIons <- protViz::fragmentIon(peptide)[[1]]$y[1:(nchar(peptide)-1)]
-  bIons <- protViz::fragmentIon(peptide)[[1]]$b[1:(nchar(peptide)-1)]
+  HCDEnergy <- S[[idx]]$`HCD Energy eV:` |> as.numeric()
   
-  names(yIons) <- paste0('y', seq(1, nchar(peptide) - 1))
-  names(bIons) <- paste0('b', seq(1, nchar(peptide) - 1))
+  .plotPrositIntensity(iRTpeptides[idx],
+                       xlim = c(150, 1000),
+                       ylim=c(-1, 1),
+                       sub = paste0(iRTpeptides[idx], " | HCD Energy eV:", HCDEnergy),
+                       axes = FALSE,
+                       collisionEnergy = HCDEnergy / 100,
+                       precursorCharge = 2
+  )
   
-  a <- dlomix::alphaPeptMs2GenericEnsemble(peptide,
-                                           precursorCharge = 2,
-                                           collisionEnergy = 0.36, 
-                                           instrument = 0)
- 
-  
-  ## retrieve mZ and intensities
-  n <- length(a)
-  mzIdx <- seq(n/2 + 1, n)
-  inIdx <- seq(1, n/2)
-  
-  ## determine y ion match
-  yIonFlagAlphaPept <- a[mzIdx][protViz::findNN(yIons, a[mzIdx])] - yIons < 0.01
-  bIonFlagAlphaPept <- a[mzIdx][protViz::findNN(bIons, a[mzIdx])] - bIons < 0.01
-  
-  plot(a[mzIdx], a[inIdx],
-       type = 'h',
-       xlab = 'm/Z',
-       ylab = 'relative intensities',
-       ylim = c(-1,1),
-       main = peptide, 
-       sub = "AlphaPept(top) / Prosit(buttom)",
-       axes = FALSE)
-  
-  axis(3, yIons[yIonFlagAlphaPept], names(yIons[yIonFlagAlphaPept]))
-  axis(3, bIons[bIonFlagAlphaPept], names(bIons[bIonFlagAlphaPept]))
-  
-  abline(h = 0)
-  p <- dlomix::prosit2019IntensityEnsemble(peptide,
-                                           precursorCharge = 2,
-                                           collisionEnergy = 0.36)
-  n <- nchar(peptide)
-  
-  ## retrieve mZ and intensities 
-  intensity <- p[seq(1,5 * n)]
-  mZ <- p[175 + seq(1,5 * n)]
-  idx <- mZ > 0
-  points(mZ[idx], -intensity[idx], type = 'h')
-  
-  ## determine y-ion match
-  yIonFlagProsit <- mZ[idx][protViz::findNN(yIons, mZ[idx])] - yIons < 0.01
-  bIonFlagProsit <- mZ[idx][protViz::findNN(bIons, mZ[idx])] - bIons < 0.01
- 
-  axis(1, yIons[yIonFlagProsit], names(yIons[yIonFlagProsit]))
-  axis(1, bIons[bIonFlagProsit], names(bIons[bIonFlagProsit]))
-  
+  points(S[[idx]]$mZ, -S[[idx]]$intensity / max(S[[idx]]$intensity), type = 'h')
+  massError
 })
 ```
 
+
 ## Compare iRT Predictions
 
-```{r iRTGenericEnsemble}
-irtSSRC <- protViz::ssrc(iRTpeptides)
-irtProsit <- sapply(iRTpeptides, dlomix::prosit2019IrtEnsemble)
+```{r iRTGenericEnsemble, fig.retina=3, fig.width=8, fig.height=8}
+## compose data frame
+rtdf <- data.frame(row.names = iRTpeptides,
+                   Prosit = sapply(iRTpeptides, dlomix::prosit2019IrtEnsemble),
+                   SSRC = protViz::ssrc(iRTpeptides),
+                   iRT = sapply(iRTpeptides, function(x){protViz::iRTpeptides$rt[which(x == protViz::iRTpeptides$peptide)]}),
+                   raw = sapply(S, function(x) x$rtinseconds)
+)
 
-plot(irtProsit ~ irtSSRC, asp = 1)
-fit <- lm(irtProsit ~ irtSSRC)
-abline(fit)
-summary(fit)
+.upper <- function(x, y){
+  points(x, y, pch=16, col="#1155FF", cex=1.5)
+  fit <- lm(y ~ x)
+  abline(fit, col='#FFAAAAAA')
+}
+
+.lower <- function(x, y){
+  fit <- lm(y ~ x)
+  par(usr = c(0, 1, 0, 1))
+  
+  text(0.5, 0.5, paste0("r.squared=",
+  round(summary(fit)$r.squared,3)),
+  cex = 1.5)
+}
+pairs(rtdf, upper.panel = .upper, lower.panel = .lower)
 ```
+
+
+
+# Session information {-}
+
+```{r sessioninfo, echo=FALSE}
+sessionInfo()
+```
+
+
+# References {-}
+
