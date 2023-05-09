@@ -18,7 +18,7 @@
 #'   dlomix::alphaPeptMs2GenericEnsemble("LGGNEQVTR")       
 #' 
 #' @export
-alphaPeptMs2GenericEnsemble <- function(peptide, collisionEnergy = 25, precursorCharge = 2L, instrument = 0L, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
+alphaPeptMs2GenericEnsemble <- function(peptide, collisionEnergy = 0.25, precursorCharge = 2L, instrument = 0L, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
     .Call(`_dlomix_alphaPeptMs2GenericEnsemble`, peptide, collisionEnergy, precursorCharge, instrument, verbose, url)
 }
 
@@ -33,7 +33,7 @@ alphaPeptMs2GenericEnsemble <- function(peptide, collisionEnergy = 25, precursor
 #'   dlomix::prosit2019IntensityEnsemble("LGGNEQVTR")       
 #' 
 #' @export
-prosit2019IntensityEnsemble <- function(peptide, collisionEnergy = 25, precursorCharge = 2L, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
+prosit2019IntensityEnsemble <- function(peptide, collisionEnergy = 0.25, precursorCharge = 2L, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
     .Call(`_dlomix_prosit2019IntensityEnsemble`, peptide, collisionEnergy, precursorCharge, verbose, url)
 }
 

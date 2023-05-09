@@ -6,7 +6,7 @@
 \usage{
 alphaPeptMs2GenericEnsemble(
   peptide,
-  collisionEnergy = 25,
+  collisionEnergy = 0.25,
   precursorCharge = 2L,
   instrument = 0L,
   verbose = FALSE,

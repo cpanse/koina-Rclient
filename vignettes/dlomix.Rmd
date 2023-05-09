@@ -44,14 +44,20 @@ library(dlomix)
 https://www.nature.com/articles/s41592-019-0426-7
 
 ```{r hello}
-dlomix::prosit2019IntensityEnsemble("LKEATIQLDELNQK")
+dlomix::prosit2019IntensityEnsemble("LKEATIQLDELNQK",
+                                    collisionEnergy = 0.25,
+                                    precursorCharge = 2L,
+                                    verbose = TRUE,
+                                    url = "dlomix.fgcz.uzh.ch:8080")
 ```
 
 
-```{r LKEATIQLDELNQK, fig.retina=3, fig.height=6, fig.width=8, fig.cap="LKEATIQLDELNQK Prosit predicted MS2; reproduce Fig.1d [@prosit2019] https://www.nature.com/articles/s41592-019-0426-7"}
+```{r helperFunction}
 ## define some R helper function ...
-.plotPrositIntensity <- function(peptide, precursorCharge = 3,
-                                 collisionEnergy = 0.35, ...){
+.plotPrositIntensity <- function(peptide,
+                                 precursorCharge = 3,
+                                 collisionEnergy = 0.35,
+                                 ...){
   p <- dlomix::prosit2019IntensityEnsemble(peptide,
       precursorCharge = precursorCharge,
       collisionEnergy = collisionEnergy)
@@ -86,15 +92,19 @@ dlomix::prosit2019IntensityEnsemble("LKEATIQLDELNQK")
   points(mZ[bIdx[yHit]], intensity[bIdx[bHit]],
          col = 'cornflowerblue', type = 'h', lwd = 2.0)
   
+  axis(4)
   axis(3, mZ[yIdx[yHit]],  names(yHit[yHit]))
+  axis(2)
   axis(1, mZ[bIdx[bHit]],  names(bHit[bHit]))
 
 } 
+```
 
-peptide <- "LKEATIQLDELNQK"
-#peptide <- "GDLLQVM[UNIMOD:35]HEAFEK"
- 
-.plotPrositIntensity(peptide, xlim = c(150, 1000), ylim=c(0,1), axes=FALSE)
+
+```{r LKEATIQLDELNQK, fig.retina=3, fig.height=6, fig.width=8, fig.cap="LKEATIQLDELNQK Prosit predicted MS2; reproduce Fig.1d [@prosit2019] https://www.nature.com/articles/s41592-019-0426-7"}
+.plotPrositIntensity("LKEATIQLDELNQK",
+                     xlim = c(150, 1000),
+                     ylim=c(0,1), axes=FALSE)
 ```
 
 ```{r Fig1, echo=FALSE, out.width="100%", eval=TRUE, fig.cap="Screenshot of Fig.1d [@prosit2019] https://www.nature.com/articles/s41592-019-0426-7"}
@@ -166,6 +176,41 @@ pairs(rtdf, upper.panel = .upper, lower.panel = .lower)
 ```
 
 
+# Soon
+
+
+|  column| name                               | example            |
+|--------|------------------------------------|--------------------|
+|     1  |  PrecursorMz                       |  391.536391        |
+|     2  |  ProductMz                         |  147.112805        |
+|     3  |  Annotation                        |  y1^1              |
+|     4  |  ProteinId                         |  P21333            |
+|     5  |  GeneName                          |  FLNA              |
+|     6  |  PeptideSequence                   |  DLAEDAPWKK        |
+|     7  |  ModifiedPeptideSequence           |  DLAEDAPWKK        |
+|     8  |  PrecursorCharge                   |  3                 |
+|     9  |  LibraryIntensity                  |  10000.0           |
+|    10  |  NormalizedRetentionTime           |  19.587033313296157|
+|    11  |  PrecursorIonMobility              |                    |
+|    12  |  FragmentType                      |  y                 |
+|    13  |  FragmentCharge                    |  1                 |
+|    14  |  FragmentSeriesNumber              |  1                 |
+|    15  |  FragmentLossType                  |                    |
+|    16  |  AverageExperimentalRetentionTime  |  1925.1328204860667|
+
+
+# FAQ
+
+## Howto encode a modification?
+```{r diffMod, fig.height=8}
+x <- "GDLLQVM[UNIMOD:35]HEAFEK" |>
+  dlomix::prosit2019IntensityEnsemble()
+y <- "GDLLQVMHEAFEK" |>
+  dlomix::prosit2019IntensityEnsemble()
+
+par(mfrow=c(2,1), mar=c(4,4,1,1))
+plot((x-y)[1:174]); plot((x-y)[175:348]) 
+```
 
 # Session information {-}
 
