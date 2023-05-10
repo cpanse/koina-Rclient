@@ -176,8 +176,7 @@ pairs(rtdf, upper.panel = .upper, lower.panel = .lower)
 ```
 
 
-# Soon
-
+# Generate a spec library   
 
 |  column| name                               | example            |
 |--------|------------------------------------|--------------------|
