@@ -41,7 +41,14 @@ Rcpp::NumericVector prosit2019IntensityEnsemble(
   bool verbose = false,
   std::string url = "dlomix.fgcz.uzh.ch:8080")
 {
-  long int batch_size = 1;
+  long int batch_size = 7000;
+  
+  if (peptide.size() > batch_size){
+    Rcpp::Rcerr << "number of input peptide is limited to a batch size of 7000." << std::endl;
+    return(NULL);
+  }
+  
+  
   tc::Headers http_headers;
   uint32_t client_timeout = 0;
   bool use_ssl = false;
@@ -61,17 +68,23 @@ Rcpp::NumericVector prosit2019IntensityEnsemble(
 
   // Create the data for the two input tensors. Initialize the first
   // to unique integers and the second to all ones.
-  std::vector<std::string> input0_data(batch_size);
-  std::vector<int32_t> input1_data(batch_size);
-  std::vector<float> input2_data(batch_size);
+  std::vector<std::string> input0_data(peptide.size());
+  std::vector<int32_t> input1_data(peptide.size());
+  std::vector<float> input2_data(peptide.size());
 
-  for (auto i = 0; i < batch_size; ++i) {
-    input0_data[i] = peptide[0];
+  
+ 
+  for (auto i = 0; i < batch_size && i < peptide.size(); ++i) {
+    if (peptide[i].size() != peptide[0].size()){
+      Rcpp::Rcerr << "number of amino acids of "<<  peptide[i] << " (element "<< i << ") should be " << peptide[0].size() << " as the first peptide in the vector." << std::endl;
+      return(NULL);
+    }
+    input0_data[i] = peptide[i];
     input1_data[i] = precursorCharge;
     input2_data[i] = collisionEnergy;
   }
 
-  std::vector<int64_t> shape{batch_size, 1};
+  std::vector<int64_t> shape{peptide.size(), 1};
 
   // Initialize the inputs with the data.
   tc::InferInput* input0;
