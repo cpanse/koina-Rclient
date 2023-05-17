@@ -12,6 +12,7 @@ Imports: Rcpp (>= 1.0.10)
 LinkingTo: Rcpp
 Suggests:
     BiocStyle (>= 2.5),
+    ExperimentHub,
     knitr,
     protViz (>= 0.7),
     rawrr,

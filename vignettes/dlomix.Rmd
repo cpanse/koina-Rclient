@@ -108,7 +108,7 @@ dlomix::prosit2019IntensityEnsemble("LKEATIQLDELNQK",
 ```
 
 ```{r Fig1, echo=FALSE, out.width="100%", eval=TRUE, fig.cap="Screenshot of Fig.1d [@prosit2019] https://www.nature.com/articles/s41592-019-0426-7"}
-  knitr::include_graphics("PrositFig1d.jpg")
+  knitr::include_graphics("https://user-images.githubusercontent.com/4901987/237583247-a948ceb3-b525-4c30-b701-218346a30cf6.jpg")
 ```
 
 
@@ -116,8 +116,19 @@ dlomix::prosit2019IntensityEnsemble("LKEATIQLDELNQK",
 
 Now we use `r BiocStyle::Biocpkg('tartar')` raw file as used in [@rawrr].
 
+```{r ExperimentHub}
+library(ExperimentHub)
+eh <- ExperimentHub::ExperimentHub()
+EH4547 <- normalizePath(eh[["EH4547"]])
+
+(rawfile <- paste0(EH4547, ".raw"))
+
+if (!file.exists(rawfile)){
+	  file.copy(EH4547, rawfile)
+}
+```
+
 ```{r Ms2GenericEnsemble}
-rawfile <- "/home/cp/.cache/R/ExperimentHub/151e026f793b5c_4590.raw"
 i <- c(9594, 12677, 16136, 17193, 11113, 12788, 13204,
        11884, 13868, 14551, 17612)
 S <- rawrr::readSpectrum(rawfile = rawfile, scan = i)
