@@ -1,6 +1,11 @@
-# Rpkg client for DLOmix service
+# Rpkg client for the koina.proteomicsdb.org  service
 
 ## FAQ
+
+### What is Koina?
+read: https://koina.proteomicsdb.org/
+
+
 ### how to run the server?
 
 #### Option 1
@@ -58,7 +63,8 @@ Rcpp::sourceCpp("src/rcpp_alphapept.cpp ", verbose = TRUE, rebuild = TRUE, cache
 out <- dlomix_AlphaPept_ms2_generic_ensemble("ELVISK")
 ```
 
+
 ## links
 
 - https://github.com/eubic/EuBIC2023/issues/12
-- https://koina.proteomicsdb.org/
+
