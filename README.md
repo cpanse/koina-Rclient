@@ -57,3 +57,8 @@ Rcpp::sourceCpp("src/rcpp_alphapept.cpp ", verbose = TRUE, rebuild = TRUE, cache
 ## call 
 out <- dlomix_AlphaPept_ms2_generic_ensemble("ELVISK")
 ```
+
+## links
+
+- https://github.com/eubic/EuBIC2023/issues/12
+- https://koina.proteomicsdb.org/
