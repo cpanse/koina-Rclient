@@ -33,7 +33,7 @@ alphaPeptMs2GenericEnsemble <- function(peptide, collisionEnergy = 0.25, precurs
 #'   dlomix::prosit2019IntensityEnsemble("LGGNEQVTR")       
 #' 
 #' @export
-prosit2019IntensityEnsemble <- function(peptide, collisionEnergy = 0.25, precursorCharge = 2L, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
+prosit2019IntensityEnsemble <- function(peptide, collisionEnergy, precursorCharge, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
     .Call(`_dlomix_prosit2019IntensityEnsemble`, peptide, collisionEnergy, precursorCharge, verbose, url)
 }
 

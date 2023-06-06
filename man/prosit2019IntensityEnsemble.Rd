@@ -6,8 +6,8 @@
 \usage{
 prosit2019IntensityEnsemble(
   peptide,
-  collisionEnergy = 0.25,
-  precursorCharge = 2L,
+  collisionEnergy,
+  precursorCharge,
   verbose = FALSE,
   url = "dlomix.fgcz.uzh.ch:8080"
 )
