@@ -26,9 +26,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// prosit2019IntensityEnsemble
-Rcpp::List prosit2019IntensityEnsemble(Rcpp::StringVector peptide, Rcpp::NumericVector collisionEnergy, Rcpp::NumericVector precursorCharge, bool verbose, std::string url);
-RcppExport SEXP _dlomix_prosit2019IntensityEnsemble(SEXP peptideSEXP, SEXP collisionEnergySEXP, SEXP precursorChargeSEXP, SEXP verboseSEXP, SEXP urlSEXP) {
+// prosit2019Intensity
+Rcpp::List prosit2019Intensity(Rcpp::StringVector peptide, Rcpp::NumericVector collisionEnergy, Rcpp::NumericVector precursorCharge, bool verbose, std::string url);
+RcppExport SEXP _dlomix_prosit2019Intensity(SEXP peptideSEXP, SEXP collisionEnergySEXP, SEXP precursorChargeSEXP, SEXP verboseSEXP, SEXP urlSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -37,7 +37,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type precursorCharge(precursorChargeSEXP);
     Rcpp::traits::input_parameter< bool >::type verbose(verboseSEXP);
     Rcpp::traits::input_parameter< std::string >::type url(urlSEXP);
-    rcpp_result_gen = Rcpp::wrap(prosit2019IntensityEnsemble(peptide, collisionEnergy, precursorCharge, verbose, url));
+    rcpp_result_gen = Rcpp::wrap(prosit2019Intensity(peptide, collisionEnergy, precursorCharge, verbose, url));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -57,7 +57,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_dlomix_alphaPeptMs2GenericEnsemble", (DL_FUNC) &_dlomix_alphaPeptMs2GenericEnsemble, 6},
-    {"_dlomix_prosit2019IntensityEnsemble", (DL_FUNC) &_dlomix_prosit2019IntensityEnsemble, 5},
+    {"_dlomix_prosit2019Intensity", (DL_FUNC) &_dlomix_prosit2019Intensity, 5},
     {"_dlomix_prosit2019IrtEnsemble", (DL_FUNC) &_dlomix_prosit2019IrtEnsemble, 3},
     {NULL, NULL, 0}
 };
