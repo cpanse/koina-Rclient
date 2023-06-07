@@ -22,7 +22,9 @@ namespace tc = triton::client;
   }
 
 
-Rcpp::DataFrame extractPrositPredictedSpectrum(float* output0_data, float* output1_data, int idx, int n){
+Rcpp::DataFrame extractPrositPredictedSpectrum(float* output0_data, float* output1_data,
+  	const std::vector<std::string>&output2_data,
+	int idx, int n){
 
   Rcpp::NumericVector intensity(n);
   Rcpp::NumericVector mz(n);
@@ -37,7 +39,8 @@ Rcpp::DataFrame extractPrositPredictedSpectrum(float* output0_data, float* outpu
   for (int i = 0; i < n; i++) {
   	intensity[i] = output0_data[idx];
 	mz[i] = output1_data[idx];
-	annotation[i] = annotationTT[i];
+	//annotation[i] = annotationTT[i];
+	annotation[i] = output2_data[idx];
 	vidx[i] = idx;
 	idx++;
   }
@@ -69,10 +72,10 @@ Rcpp::List prosit2019IntensityEnsemble(
   bool verbose = false,
   std::string url = "dlomix.fgcz.uzh.ch:8080")
 {
-  long int batch_size = 7000;
+  long int batch_size = 5000;
 
   if (peptide.size() > batch_size){
-    Rcpp::Rcerr << "number of input peptide is limited to a batch size of 7000." << std::endl;
+    Rcpp::Rcerr << "number of input peptide is limited to a batch size of " << batch_size << "." << std::endl;
     return(NULL);
   }
   
@@ -136,7 +139,7 @@ Rcpp::List prosit2019IntensityEnsemble(
   input0_ptr.reset(input0);
 
   FAIL_IF_ERR(
-      tc::InferInput::Create(&input1, "precursor_charge", shape, "INT32"),
+      tc::InferInput::Create(&input1, "precursor_charges", shape, "INT32"),
       "unable to get precursor_charge_in_int:0");
   std::shared_ptr<tc::InferInput> input1_ptr;
   input1_ptr.reset(input1);
@@ -169,6 +172,7 @@ Rcpp::List prosit2019IntensityEnsemble(
   // Generate the outputs to be requested.
   tc::InferRequestedOutput* output0;
   tc::InferRequestedOutput* output1;
+  tc::InferRequestedOutput* output2;
 
   FAIL_IF_ERR(
       tc::InferRequestedOutput::Create(&output0, "intensities"),
@@ -182,14 +186,27 @@ Rcpp::List prosit2019IntensityEnsemble(
   std::shared_ptr<tc::InferRequestedOutput> output1_ptr;
   output1_ptr.reset(output1);
 
+  FAIL_IF_ERR(
+      tc::InferRequestedOutput::Create(&output2, "annotation"),
+      "unable to get 'OUTPUT annotation'");
+  std::shared_ptr<tc::InferRequestedOutput> output2_ptr;
+  output2_ptr.reset(output2);
+
 
   // The inference settings. Will be using default for now.
   tc::InferOptions options(model_name);
   options.model_version_ = model_version;
   options.client_timeout_ = client_timeout;
 
-  std::vector<tc::InferInput*> inputs = {input0_ptr.get(), input1_ptr.get(), input2_ptr.get()};
-  std::vector<const tc::InferRequestedOutput*> outputs = {output0_ptr.get(), output1_ptr.get()};
+  std::vector<tc::InferInput*> inputs = {
+	  input0_ptr.get(),
+  	  input1_ptr.get(),
+	  input2_ptr.get()};
+
+  std::vector<const tc::InferRequestedOutput*> outputs = {
+	  output0_ptr.get(),
+	  output1_ptr.get(),
+	  output2_ptr.get()};
 
   tc::InferResult* results;
   FAIL_IF_ERR(
@@ -204,23 +221,33 @@ Rcpp::List prosit2019IntensityEnsemble(
   FAIL_IF_ERR(
     results_ptr->RawData("intensities",
       (const uint8_t**)&output0_data, &output0_byte_size),
-      "unable to get result data for 'OUTPUT1'");  
+      "unable to get result data for 'mz'");  
 
   float* output1_data;
   size_t output1_byte_size;
   FAIL_IF_ERR(
     results_ptr->RawData("mz",
       (const uint8_t**)&output1_data, &output1_byte_size),
-      "unable to get result data for 'OUTPUT2'");  
+      "unable to get result data for 'intensities'");  
 
+  std::vector<std::string> output2_data;
+  size_t output2_byte_size;
+  FAIL_IF_ERR(
+    results_ptr->StringData("annotation", &output2_data), 
+      "unable to get result data for 'annotation'");  
   //Rcpp::Rcout << "output0_byte_size\t=\t" << output0_byte_size<< std::endl;
+      // #, &output2_byte_size),
  
   int outn = output1_byte_size / 4 / peptide.size();
   
+  Rcpp::Rcout << "\nDEBUG\t" << output2_data.at(0) << std::endl;
 
   for (int i = 0; i < peptide.size(); i++){
  // Rcpp::Rcout << peptide[i] << "\t" << peptide[i].size() << std::endl;
-    Rcpp::DataFrame df = extractPrositPredictedSpectrum(output0_data, output1_data, i * outn, 6 * (peptide[i].size() - 1));
+    Rcpp::DataFrame df = extractPrositPredictedSpectrum(output0_data,
+    	output1_data,
+	output2_data,
+	i * outn, 6 * (peptide[i].size() - 1));
     Lrv[i] = df;
   }
 
