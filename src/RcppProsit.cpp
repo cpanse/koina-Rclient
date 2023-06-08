@@ -37,8 +37,14 @@ Rcpp::DataFrame extractPrositPredictedSpectrum(float* output0_data, float* outpu
   // for debug only
   // Rcpp::NumericVector vidx(n);
   for (int i = 0; i < n; i++) {
-    intensity[i] = output0_data[idx];
-    mz[i] = output1_data[idx];
+
+    if (output1_data[idx] < 0.0){
+      intensity[i] = NA_REAL;
+      mz[i] = NA_REAL;
+    }else{
+      intensity[i] = output0_data[idx];
+      mz[i] = output1_data[idx];
+    }
     annotation[i] = output2_data[idx];
     idx++;
   }
