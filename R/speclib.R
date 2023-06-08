@@ -1,29 +1,27 @@
 #R
 
-
-validateComposeProsit2019SpecLibrary <- function(x){
+validateComposeSpecLibrary <- function(x){
   ## TODO
-  x
+  x[!is.na(x$ProductMz), ]
 }
 
 #' Compose a specLibrary of a given peptide sequence
 #'
-#' @inheritParams prosit2019IntensityEnsemble
+#' @inheritParams prosit2019Intensity
 #' @importFrom protViz fragmentIon
 #' @description
 #' define some R helper function for generating a specLibrary file as it 
 #' can be read by DIANN.
 #' @return a specLib \code{data.frame}.
 #' @export
-composeProsit2019SpecLibrary <- function(peptide,
-                                     precursorCharge = 3,
-                                     collisionEnergy = 0.35){
-  ## predict MS2 and rt 
-  p <- dlomix::prosit2019IntensityEnsemble(peptide,
-                                           precursorCharge = precursorCharge,
-                                           collisionEnergy = collisionEnergy)
+.composeSpecLibrary <- function(peptide,
+	proteinId = NA,
+        precursorCharge = 3,
+        collisionEnergy = 35,
+	mS2prediction = NULL){
   
-  iRT <- dlomix::prosit2019IrtEnsemble(peptide)
+  #iRT <- dlomix::prosit2019IrtEnsemble(peptide)
+  iRT <- protViz::ssrc(peptide) |> as.double()
   
   ## derive ground truth
   n <- nchar(peptide)
@@ -34,8 +32,8 @@ composeProsit2019SpecLibrary <- function(peptide,
   
   
   ## decode Prosit output vector 
-  intensity <- p[seq(1, 6 * n)]
-  mZ <- p[175 + seq(1, 6 * n)]
+  intensity <- mS2prediction$intensity
+  mZ <- mS2prediction$mz
   
   
   ## compose specLibrary data.frame
@@ -49,28 +47,30 @@ composeProsit2019SpecLibrary <- function(peptide,
   names(b1Idx) <- paste0("b", seq(1,n-1), "^1")
   
   ## sanity check
-  dError <- abs((((p[175 + y1Idx[1]] + p[175 + b1Idx[n-1]])+ 1.007) / precursorCharge) - PrecursorMz)
-  if (abs(dError) > 0.0001) warning(paste0("precursorMz difference ", dError, " is to high!"))
+  # dError <- abs((((p[175 + y1Idx[1]] + p[175 + b1Idx[n-1]])+ 1.007) / precursorCharge) - PrecursorMz)
+  #if (abs(dError) > 0.0001) warning(paste0("precursorMz difference ", dError, " is to high!"))
+
+  n <-  nrow(mS2prediction)
   
   df <- data.frame(
-    PrecursorMz = rep(PrecursorMz, 2 * (n-1)),
-    ProductMz = p[175 + c(y1Idx, b1Idx)],
-    Annotation = c(names(y1Idx), names(b1Idx)),
-    ProteinId = NA,
+    PrecursorMz = rep(PrecursorMz, n),
+    ProductMz = mS2prediction$mz,
+    Annotation = gsub("+", "^", mS2prediction$annotation, fixed = TRUE),
+    ProteinId = proteinId,
     GeneName = NA,
-    PeptideSequence = rep(peptide, 2 * (n-1)),
-    ModifiedPeptideSequence = rep(peptide, 2 * (n-1)),
-    PrecursorCharge = rep(precursorCharge, 2 * (n-1)),
-    LibraryIntensity = p[c(y1Idx, b1Idx)], 
+    PeptideSequence = rep(peptide, n),
+    ModifiedPeptideSequence = rep(peptide, n),
+    PrecursorCharge = rep(precursorCharge, n),
+    LibraryIntensity = mS2prediction$intensity, 
     NormalizedRetentionTime = iRT,
     PrecursorIonMobility = NA,
-    FragmentType = c(rep('y', n-1), rep('b', n-1)),
-    FragmentCharge = rep(1, 2*(n-1)),
-    FragmentSeriesNumber = rep(seq(1, n-1),2),
+    FragmentType = substr(mS2prediction$annotation, 1,1),
+    FragmentCharge = substr(mS2prediction$annotation, nchar(mS2prediction$annotation), nchar(mS2prediction$annotation)),
+    FragmentSeriesNumber = sapply(strsplit(mS2prediction$annotation, '[by+]', perl=TRUE) , function(x){x[2]}),
     FragmentLossType = NA,
-    AverageExperimentalRetentionTime = 100 * iRT
+    AverageExperimentalRetentionTime = 100 * rep(iRT, n)
   ) 
     
   # class(df) <- "Prosit2019SpecLibrary"
-  validateComposeProsit2019SpecLibrary(df)
+  validateComposeSpecLibrary(df)
 }
