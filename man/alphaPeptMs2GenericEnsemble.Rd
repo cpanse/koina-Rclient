@@ -16,7 +16,7 @@ alphaPeptMs2GenericEnsemble(
 \arguments{
 \item{peptide}{amino acid sequence, e.g., \code{"LGGNEQVTR"}}
 
-\item{collisionEnergy}{the collision energy in [eV]?, default is 25.}
+\item{collisionEnergy}{the collision energy in [eV]?.}
 
 \item{precursorCharge}{precursor charge, e.g., 2.}
 

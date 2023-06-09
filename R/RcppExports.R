@@ -8,7 +8,7 @@
 #'
 #' @param peptide amino acid sequence, e.g., \code{"LGGNEQVTR"}
 #' @param precursorCharge precursor charge, e.g., 2.
-#' @param collisionEnergy the collision energy in [eV]?, default is 25.
+#' @param collisionEnergy the collision energy in [eV]?.
 #' @param instrument  an integer defining the instrument: 0 - QE;
 #' 1 - Lumos; 2 - timsTOF; 3 - SciexTOF.
 #' @param verbose provides grpc proteobuf output.

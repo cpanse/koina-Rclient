@@ -76,3 +76,77 @@ validateComposeSpecLibrary <- function(x){
   # class(df) <- "Prosit2019SpecLibrary"
   validateComposeSpecLibrary(df)
 }
+
+
+#' write SpecLibrary file
+#'
+#' @param input intput data.frame see example
+#' @param outputfn specLibrary file
+#' @inheritParams prosit2019Intensity
+#' @param FUN the prediction method, defaul is using dlomix::prosit2019Intensity
+#' @param ... pass to parallel::mclapply
+#' 
+#' @importFrom parallel mclapply
+#' 
+#' @return TRUE iff file exists
+#' @export
+#'
+#' @examples
+#' input <- data.frame(peptide =  c("LGGNEQVTR", "YILAGVENSK", "GTFIIDPGGVIR", "GTFIIDPAAVIR",
+#'   "GAGSSEPVTGLDAK", "TPVISGGPYEYR", "VEATFGVDESNAK",
+#'   "TPVITGAPYEYR", "DGLDAASYYAPVR", "ADVTPADFSEWSK",
+#'   "LFLQFGAQGSPFLK"), proteinId = rep("iRT", 11))
+#'   
+#'   dlomix:::.writeSpecLibrary(input,
+#'     outputfn = tempfile(fileext = '.specLibrary.tsv'))
+.writeSpecLibrary <- function(input = NULL,
+                              outputfn = tempfile(fileext = '.specLibrary.tsv', tmpdir='.'),
+                              collisionEnergy = 35,
+                              precursorCharge = 3,
+                              FUN = dlomix::prosit2019Intensity, ...){
+  
+  stopifnot('peptide' %in% colnames(input),
+            'proteinId' %in% colnames(input),
+            nrow(input) > 0,
+            !file.exists(outputfn))
+  
+  start_time <- Sys.time()
+  P <- input[['peptide']] |>
+    FUN(collisionEnergy = collisionEnergy,
+        precursorCharge = precursorCharge)
+  end_time <- Sys.time()
+  
+  message(paste("prediction of", length(P), "peptides took", end_time - start_time))
+  
+  
+  start_time <- Sys.time()
+  
+  rv <- parallel::mclapply(1:length(P),
+                           FUN = function(i){
+                             
+                             .composeSpecLibrary(peptide = input[i, 'peptide'],
+                                                 proteinId = input[i, 'proteinId'],
+                                                 precursorCharge = precursorCharge,
+                                                 collisionEnergy = collisionEnergy,
+                                                 P[[i]])
+                           }, ...) |>
+    lapply(function(y){
+      PRINTHEADER <- TRUE
+      ## print header only once
+      if (file.exists(outputfn)) PRINTHEADER <- FALSE
+      
+      write.table(y,
+                  file = outputfn,
+                  append = !PRINTHEADER,
+                  col.names = PRINTHEADER, 
+                  row.names = FALSE,
+                  sep = '\t',
+                  na = '',
+                  quote = FALSE)
+    })
+  
+  end_time <- Sys.time()
+  message(paste("composing and writting of file took", end_time - start_time))
+  
+  file.exists(outputfn)
+}

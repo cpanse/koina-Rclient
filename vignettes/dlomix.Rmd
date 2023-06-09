@@ -58,7 +58,7 @@ dlomix::prosit2019Intensity("LKEATIQLDELNQK",
                                  precursorCharge = 3,
                                  collisionEnergy = 35,
                                  ...){
-  
+  #message(paste("predicting peptide", peptide))
   #peptide <- "LKEATIQLDELNQK"
   #precursorCharge = 3
   #collisionEnergy = 35
@@ -66,6 +66,7 @@ dlomix::prosit2019Intensity("LKEATIQLDELNQK",
       precursorCharge = precursorCharge,
       collisionEnergy = collisionEnergy)[[1]]
 
+  p <- p[!is.na(p$mz),]
   n <- nchar(peptide)
   
   yIons <- protViz::fragmentIon(peptide)[[1]]$y[seq(1, n-1)]
@@ -189,6 +190,7 @@ sapply(c(1:11), function(idx){
   collisionEnergies <- seq(10, 40, length = n)
   precursorCharges <- rep(2, n)
   ps <- dlomix::prosit2019Intensity(peptides, collisionEnergy = collisionEnergies, precursorCharge =  precursorCharges) |>
+    lapply(function(x)x[!is.na(x$mz),]) |>
     lapply(function(x) x[order(x$mz),])
   
   r.squared <- ps |>
@@ -268,19 +270,19 @@ as provided by FragPipe
 
 
 
-```{r  eval=FALSE}
-L <- dlomix:::composeProsit2019SpecLibrary(
-  peptide = "DLAEDAPWKK",
-  precursorCharge = 3,
-  collisionEnergy = 0.35)
+```{r  eval=TRUE}
+p <- dlomix::prosit2019Intensity(peptide = "LKEATIQLDELNQK",
+                                 collisionEnergy = 35,
+                                 precursorCharge = 3)[[1]]
 
-cnames <- names(L)
 
-names(L) <- paste0("x", seq(1, ncol(L)))
+L <- dlomix:::.composeSpecLibrary(peptide = "LKEATIQLDELNQK",
+                             proteinId = NA, collisionEnergy = 35,
+                             precursorCharge = 3, p)
 L |>
   knitr::kable(font_size = 7)
 
-knitr::kable(data.frame(name=names(L), full.name=cnames))
+#knitr::kable(data.frame(name=names(L), full.name=cnames))
 ```
 
 # FAQ
