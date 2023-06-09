@@ -8,6 +8,8 @@ validateComposeSpecLibrary <- function(x){
 #' Compose a specLibrary of a given peptide sequence
 #'
 #' @inheritParams prosit2019Intensity
+#' @param proteinId description
+#' @param mS2prediction a nest list objects of data.frames
 #' @importFrom protViz fragmentIon
 #' @description
 #' define some R helper function for generating a specLibrary file as it 
