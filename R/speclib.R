@@ -2,7 +2,7 @@
 
 validateComposeSpecLibrary <- function(x){
   ## TODO
-  x[!is.na(x$ProductMz), ]
+  x[!is.na(x$ProductMz) & x$LibraryIntensity > 0.0, ]
 }
 
 #' Compose a specLibrary of a given peptide sequence
@@ -63,7 +63,7 @@ validateComposeSpecLibrary <- function(x){
     PeptideSequence = rep(peptide, n),
     ModifiedPeptideSequence = rep(peptide, n),
     PrecursorCharge = rep(precursorCharge, n),
-    LibraryIntensity = mS2prediction$intensity, 
+    LibraryIntensity = round(100 * mS2prediction$intensity, 2),
     NormalizedRetentionTime = iRT,
     PrecursorIonMobility = NA,
     FragmentType = substr(mS2prediction$annotation, 1,1),
