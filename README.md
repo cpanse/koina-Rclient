@@ -5,7 +5,6 @@
 ### What is Koina?
 read: https://koina.proteomicsdb.org/
 
-
 ### how to run the server?
 
 #### Option 1
@@ -19,12 +18,13 @@ docker compose logs serving -f
 
 #### Option 2
 
-use a public one, e.g., dlomix.fgcz.uzh.ch:8080
+use a public one, e.g., dlomix.fgcz.uzh.ch:8080 (using `usessl=FALSE`)
+or koina.proteomicsdb.org:443 
 
 ### how to set the library path?
 
 ```
-$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/cpanse/src/v2.34.0dev.clients/lib/
+$ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/src/v2.34.0dev.clients/lib/
 
 
 cpanse@fgcz-h-480:~/src/github.com/cpanse/dlomix-Rclient  (main)> ldd dlomix 
@@ -62,7 +62,7 @@ Rcpp::sourceCpp("src/rcpp_alphapept.cpp ", verbose = TRUE, rebuild = TRUE, cache
 ## call 
 out <- dlomix_AlphaPept_ms2_generic_ensemble("ELVISK")
 ```
-
+of note, this section is outdated
 
 ## links
 
