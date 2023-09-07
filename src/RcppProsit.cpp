@@ -57,7 +57,7 @@ Rcpp::DataFrame extractPrositPredictedSpectrum(float* output0_data, float* outpu
   
   return df;
 }
-//' Prosit_2019_intensity_ensemble
+//' prosit2019Intensity
 //'
 //' This function returns a predicted fragment ion spectrum
 //' of a given peptide sequence.
@@ -65,7 +65,10 @@ Rcpp::DataFrame extractPrositPredictedSpectrum(float* output0_data, float* outpu
 //' @inheritParams alphaPeptMs2GenericEnsemble
 //'
 //' @examples
-//'   dlomix::prosit2019IntensityEnsemble("LGGNEQVTR")       
+//'
+//'  dlomix::prosit2019Intensity("LKEATIQLDELNQK",
+//'    collisionEnergy = 25, precursorCharge = 2L, verbose = TRUE,
+//'    url = "dlomix.fgcz.uzh.ch:8080") |> head()
 //' 
 //' @export
 // [[Rcpp::export]]

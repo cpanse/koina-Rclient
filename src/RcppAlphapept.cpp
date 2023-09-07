@@ -51,7 +51,7 @@ ValidateShapeAndDatatype(
 
 }  // namespace
 
-//' AlphaPept_ms2_generic_ensemble
+//' alphaPeptMs2GenericEnsemble
 //'
 //' This function returns a predicted fragment ion spectrum
 //' of a given peptide sequence.
@@ -65,7 +65,7 @@ ValidateShapeAndDatatype(
 //' @param url GRPC url, e.g., localhost:9990 or \url{dlomix.fgcz.uzh.ch:8080}.
 //' 
 //' @examples
-//'   dlomix::alphaPeptMs2GenericEnsemble("LGGNEQVTR")       
+//'   dlomix::alphaPeptMs2GenericEnsemble("LGGNEQVTR", collisionEnergy = 0.25, precursorCharge = 2)       
 //' 
 //' @export
 // [[Rcpp::export]]

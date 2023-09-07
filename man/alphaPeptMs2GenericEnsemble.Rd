@@ -2,7 +2,7 @@
 % Please edit documentation in R/RcppExports.R
 \name{alphaPeptMs2GenericEnsemble}
 \alias{alphaPeptMs2GenericEnsemble}
-\title{AlphaPept_ms2_generic_ensemble}
+\title{alphaPeptMs2GenericEnsemble}
 \usage{
 alphaPeptMs2GenericEnsemble(
   peptide,
@@ -32,6 +32,6 @@ This function returns a predicted fragment ion spectrum
 of a given peptide sequence.
 }
 \examples{
-  dlomix::alphaPeptMs2GenericEnsemble("LGGNEQVTR")       
+  dlomix::alphaPeptMs2GenericEnsemble("LGGNEQVTR", collisionEnergy = 0.25, precursorCharge = 2)       
 
 }
