@@ -1,8 +1,11 @@
 Package: koina
 Type: Package
-Title: DLOmix GRPC Client
-Version: 0.1.0
-Author: Who wrote it
+Title: koina GRPC Client
+Version: 0.1.1
+Authors@R: person("Christian", "Panse", 
+		email = "Christian.Panse@gmail.com", 
+		role = c("aut", "cre"),
+		comment = c(ORCID = "0000-0003-1975-3064"))
 Maintainer: The package maintainer <cp@fgcz.ethz.ch>
 Description: Provides an R interface for the DLOmix service using the GRPC
     protocol.
@@ -20,9 +23,9 @@ Suggests:
     tartare (>= 1.5),
     testthat
 License: GPL-3
-SystemRequirements: NVIDIA Triton libgrpcclient.so (>= 2.34)
-URL: https://github.com/cpanse/dlomix-Rclient
-BugReports: https://github.com/cpanse/dlomix-Rclient/issues
+SystemRequirements: NVIDIA Triton libgrpcclient.so (>= 2.34), libssl.so.1.1 and libcrypto.so.1.1
+URL: https://github.com/cpanse/koina-Rclient
+BugReports: https://github.com/cpanse/koina-Rclient/issues
 RoxygenNote: 7.2.3
 biocViews: MassSpectrometry, Proteomics
 VignetteBuilder: knitr
