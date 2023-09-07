@@ -15,11 +15,11 @@
 #' @param url GRPC url, e.g., localhost:9990 or \url{dlomix.fgcz.uzh.ch:8080}.
 #' 
 #' @examples
-#'   dlomix::alphaPeptMs2GenericEnsemble("LGGNEQVTR", collisionEnergy = 0.25, precursorCharge = 2)       
+#'   koina::alphaPeptMs2GenericEnsemble("LGGNEQVTR", collisionEnergy = 0.25, precursorCharge = 2)       
 #' 
 #' @export
 alphaPeptMs2GenericEnsemble <- function(peptide, collisionEnergy = 0.25, precursorCharge = 2L, instrument = 0L, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
-    .Call(`_dlomix_alphaPeptMs2GenericEnsemble`, peptide, collisionEnergy, precursorCharge, instrument, verbose, url)
+    .Call(`_koina_alphaPeptMs2GenericEnsemble`, peptide, collisionEnergy, precursorCharge, instrument, verbose, url)
 }
 
 #' prosit2019Intensity
@@ -28,17 +28,19 @@ alphaPeptMs2GenericEnsemble <- function(peptide, collisionEnergy = 0.25, precurs
 #' of a given peptide sequence.
 #'
 #' @inheritParams alphaPeptMs2GenericEnsemble
-#' @params usesll usessl default is set to false
+#' @params usesll boolean use ssl, default is set to \code{TRUE}.
 #'
 #' @examples
 #'
-#'  dlomix::prosit2019Intensity("LKEATIQLDELNQK",
-#'    collisionEnergy = 25, precursorCharge = 2L, verbose = TRUE,
-#'    url = "dlomix.fgcz.uzh.ch:8080") |> head()
+#'  koina::prosit2019Intensity("LKEATIQLDELNQK",
+#'    collisionEnergy = 25, precursorCharge = 2L, verbose = TRUE, usessl=TRUE,
+#'    url = "koina.proteomicsdb.org:443") |> head()
+#'
+#' #   url = "dlomix.fgcz.uzh.ch:8080"
 #' 
 #' @export
-prosit2019Intensity <- function(peptide, collisionEnergy, precursorCharge, verbose = FALSE, usessl = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
-    .Call(`_dlomix_prosit2019Intensity`, peptide, collisionEnergy, precursorCharge, verbose, usessl, url)
+prosit2019Intensity <- function(peptide, collisionEnergy, precursorCharge, verbose = FALSE, usessl = TRUE, url = "koina.proteomicsdb.org:443") {
+    .Call(`_koina_prosit2019Intensity`, peptide, collisionEnergy, precursorCharge, verbose, usessl, url)
 }
 
 #' Prosit_2019_irt_ensemble
@@ -46,10 +48,10 @@ prosit2019Intensity <- function(peptide, collisionEnergy, precursorCharge, verbo
 #' @inheritParams alphaPeptMs2GenericEnsemble
 #'
 #' @examples
-#'   dlomix::prosit2019IrtEnsemble("LGGNEQVTR")       
+#'   koina::prosit2019IrtEnsemble("LGGNEQVTR")       
 #' 
 #' @export
 prosit2019IrtEnsemble <- function(peptide, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
-    .Call(`_dlomix_prosit2019IrtEnsemble`, peptide, verbose, url)
+    .Call(`_koina_prosit2019IrtEnsemble`, peptide, verbose, url)
 }
 

@@ -12,7 +12,7 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 
 // alphaPeptMs2GenericEnsemble
 Rcpp::NumericVector alphaPeptMs2GenericEnsemble(Rcpp::StringVector peptide, float collisionEnergy, int precursorCharge, int instrument, bool verbose, std::string url);
-RcppExport SEXP _dlomix_alphaPeptMs2GenericEnsemble(SEXP peptideSEXP, SEXP collisionEnergySEXP, SEXP precursorChargeSEXP, SEXP instrumentSEXP, SEXP verboseSEXP, SEXP urlSEXP) {
+RcppExport SEXP _koina_alphaPeptMs2GenericEnsemble(SEXP peptideSEXP, SEXP collisionEnergySEXP, SEXP precursorChargeSEXP, SEXP instrumentSEXP, SEXP verboseSEXP, SEXP urlSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -28,7 +28,7 @@ END_RCPP
 }
 // prosit2019Intensity
 Rcpp::List prosit2019Intensity(Rcpp::StringVector peptide, Rcpp::NumericVector collisionEnergy, Rcpp::NumericVector precursorCharge, bool verbose, bool usessl, std::string url);
-RcppExport SEXP _dlomix_prosit2019Intensity(SEXP peptideSEXP, SEXP collisionEnergySEXP, SEXP precursorChargeSEXP, SEXP verboseSEXP, SEXP usesslSEXP, SEXP urlSEXP) {
+RcppExport SEXP _koina_prosit2019Intensity(SEXP peptideSEXP, SEXP collisionEnergySEXP, SEXP precursorChargeSEXP, SEXP verboseSEXP, SEXP usesslSEXP, SEXP urlSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -44,7 +44,7 @@ END_RCPP
 }
 // prosit2019IrtEnsemble
 Rcpp::NumericVector prosit2019IrtEnsemble(Rcpp::StringVector peptide, bool verbose, std::string url);
-RcppExport SEXP _dlomix_prosit2019IrtEnsemble(SEXP peptideSEXP, SEXP verboseSEXP, SEXP urlSEXP) {
+RcppExport SEXP _koina_prosit2019IrtEnsemble(SEXP peptideSEXP, SEXP verboseSEXP, SEXP urlSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -57,13 +57,13 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_dlomix_alphaPeptMs2GenericEnsemble", (DL_FUNC) &_dlomix_alphaPeptMs2GenericEnsemble, 6},
-    {"_dlomix_prosit2019Intensity", (DL_FUNC) &_dlomix_prosit2019Intensity, 6},
-    {"_dlomix_prosit2019IrtEnsemble", (DL_FUNC) &_dlomix_prosit2019IrtEnsemble, 3},
+    {"_koina_alphaPeptMs2GenericEnsemble", (DL_FUNC) &_koina_alphaPeptMs2GenericEnsemble, 6},
+    {"_koina_prosit2019Intensity", (DL_FUNC) &_koina_prosit2019Intensity, 6},
+    {"_koina_prosit2019IrtEnsemble", (DL_FUNC) &_koina_prosit2019IrtEnsemble, 3},
     {NULL, NULL, 0}
 };
 
-RcppExport void R_init_dlomix(DllInfo *dll) {
+RcppExport void R_init_koina(DllInfo *dll) {
     R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
     R_useDynamicSymbols(dll, FALSE);
 }

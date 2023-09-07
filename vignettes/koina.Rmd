@@ -6,13 +6,13 @@ author:
     - &id Functional Genomics Center Zurich - Functional Genomics Center Zurich (FGCZ) - University of Zurich | ETH Zurich, Winterthurerstrasse 190, CH-8057 Zurich, Switzerland
     - Swiss Institute of Bioinformatics (SIB), Quartier Sorge - Batiment Amphipole, CH-1015 Lausanne, Switzerland
   email: cp@fgcz.ethz.ch
-package: dlomix
+package: koina
 abstract: |
   This vignette provides ...
 output:
   BiocStyle::html_document:
     toc_float: true
-bibliography: dlomix.bib
+bibliography: koina.bib
 vignette: >
   %\usepackage[utf8]{inputenc}
   %\VignetteIndexEntry{primer}
@@ -35,7 +35,7 @@ lp <- file.path(Sys.getenv("HOME"),
 stopifnot(file.exists(lp))
 
 dyn.load(lp)
-library(dlomix)
+library(koina)
 ```
 
 # Hello, `LKEATIQLDELNQK`!
@@ -44,11 +44,12 @@ library(dlomix)
 https://www.nature.com/articles/s41592-019-0426-7
 
 ```{r hello}
-dlomix::prosit2019Intensity("LKEATIQLDELNQK",
+koina::prosit2019Intensity("LKEATIQLDELNQK",
                                     collisionEnergy = 25,
                                     precursorCharge = 2L,
                                     verbose = TRUE,
-                                    url = "dlomix.fgcz.uzh.ch:8080") |> head()
+				    usessl = TRUE,
+                                    url = "koina.proteomicsdb.org:443") |> head()
 ```
 
 
@@ -62,9 +63,10 @@ dlomix::prosit2019Intensity("LKEATIQLDELNQK",
   #peptide <- "LKEATIQLDELNQK"
   #precursorCharge = 3
   #collisionEnergy = 35
-  p <- dlomix::prosit2019Intensity(peptide,
+  p <- koina::prosit2019Intensity(peptide,
       precursorCharge = precursorCharge,
-      collisionEnergy = collisionEnergy)[[1]]
+      collisionEnergy = collisionEnergy,
+      usessl = TRUE)[[1]]
 
   p <- p[!is.na(p$mz),]
   n <- nchar(peptide)
@@ -189,7 +191,7 @@ sapply(c(1:11), function(idx){
   peptides <- rep(peptide[1], n)
   collisionEnergies <- seq(10, 40, length = n)
   precursorCharges <- rep(2, n)
-  ps <- dlomix::prosit2019Intensity(peptides, collisionEnergy = collisionEnergies, precursorCharge =  precursorCharges) |>
+  ps <- koina::prosit2019Intensity(peptides, collisionEnergy = collisionEnergies, precursorCharge =  precursorCharges, usessl = TRUE) |>
     lapply(function(x)x[!is.na(x$mz),]) |>
     lapply(function(x) x[order(x$mz),])
   
@@ -219,7 +221,7 @@ rv <- lapply(1:11, function(i){
 ```{r iRTGenericEnsemble, fig.retina=3, fig.width=8, fig.height=8, eval=FALSE}
 ## compose data frame
 rtdf <- data.frame(row.names = iRTpeptides,
-                   Prosit = sapply(iRTpeptides, dlomix::prosit2019IrtEnsemble),
+                   Prosit = sapply(iRTpeptides, koina::prosit2019IrtEnsemble),
                    SSRC = protViz::ssrc(iRTpeptides),
                    iRT = sapply(iRTpeptides, function(x){protViz::iRTpeptides$rt[which(x == protViz::iRTpeptides$peptide)]}),
                    raw = sapply(S, function(x) x$rtinseconds)
@@ -271,12 +273,12 @@ as provided by FragPipe
 
 
 ```{r  eval=TRUE}
-p <- dlomix::prosit2019Intensity(peptide = "LKEATIQLDELNQK",
+p <- koina::prosit2019Intensity(peptide = "LKEATIQLDELNQK",
                                  collisionEnergy = 35,
-                                 precursorCharge = 3)[[1]]
+                                 precursorCharge = 3, usessl = TRUE)[[1]]
 
 
-L <- dlomix:::.composeSpecLibrary(peptide = "LKEATIQLDELNQK",
+L <- koina:::.composeSpecLibrary(peptide = "LKEATIQLDELNQK",
                              proteinId = NA, collisionEnergy = 35,
                              precursorCharge = 3, p)
 L |>
@@ -289,11 +291,11 @@ L |>
 
 ## Howto encode a modification?
 ```{r diffMod, fig.height=8, eval=FALSE}
-x <- dlomix::prosit2019Intensity(peptide = "GDLLQVM[UNIMOD:35]HEAFEK",
+x <- koina::prosit2019Intensity(peptide = "GDLLQVM[UNIMOD:35]HEAFEK",
                                  collisionEnergy = 35,
                                  precursorCharge = 3)[[1]]
 
-y <- dlomix::prosit2019Intensity(peptide = "GDLLQVMHEAFEK",
+y <- koina::prosit2019Intensity(peptide = "GDLLQVMHEAFEK",
                                  collisionEnergy = 35,
                                  precursorCharge = 3)[[1]]
 

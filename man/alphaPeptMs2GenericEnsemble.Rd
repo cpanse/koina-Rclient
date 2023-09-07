@@ -32,6 +32,6 @@ This function returns a predicted fragment ion spectrum
 of a given peptide sequence.
 }
 \examples{
-  dlomix::alphaPeptMs2GenericEnsemble("LGGNEQVTR", collisionEnergy = 0.25, precursorCharge = 2)       
+  koina::alphaPeptMs2GenericEnsemble("LGGNEQVTR", collisionEnergy = 0.25, precursorCharge = 2)       
 
 }

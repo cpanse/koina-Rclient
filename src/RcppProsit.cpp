@@ -63,13 +63,15 @@ Rcpp::DataFrame extractPrositPredictedSpectrum(float* output0_data, float* outpu
 //' of a given peptide sequence.
 //'
 //' @inheritParams alphaPeptMs2GenericEnsemble
-//' @params usesll usessl default is set to false
+//' @params usesll boolean use ssl, default is set to \code{TRUE}.
 //'
 //' @examples
 //'
-//'  dlomix::prosit2019Intensity("LKEATIQLDELNQK",
-//'    collisionEnergy = 25, precursorCharge = 2L, verbose = TRUE,
-//'    url = "dlomix.fgcz.uzh.ch:8080") |> head()
+//'  koina::prosit2019Intensity("LKEATIQLDELNQK",
+//'    collisionEnergy = 25, precursorCharge = 2L, verbose = TRUE, usessl=TRUE,
+//'    url = "koina.proteomicsdb.org:443") |> head()
+//'
+//' #   url = "dlomix.fgcz.uzh.ch:8080"
 //' 
 //' @export
 // [[Rcpp::export]]
@@ -78,8 +80,8 @@ Rcpp::List prosit2019Intensity(
   Rcpp::NumericVector collisionEnergy,
   Rcpp::NumericVector precursorCharge,
   bool verbose = false,
-  bool usessl = false,
-  std::string url = "dlomix.fgcz.uzh.ch:8080")
+  bool usessl = true,
+  std::string url = "koina.proteomicsdb.org:443")
 {
   long int batch_size = 5000;
 
@@ -269,7 +271,7 @@ Rcpp::List prosit2019Intensity(
 //' @inheritParams alphaPeptMs2GenericEnsemble
 //'
 //' @examples
-//'   dlomix::prosit2019IrtEnsemble("LGGNEQVTR")       
+//'   koina::prosit2019IrtEnsemble("LGGNEQVTR")       
 //' 
 //' @export
 // [[Rcpp::export]]

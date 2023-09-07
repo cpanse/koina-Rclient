@@ -21,6 +21,6 @@ prosit2019IrtEnsemble(
 Prosit_2019_irt_ensemble
 }
 \examples{
-  dlomix::prosit2019IrtEnsemble("LGGNEQVTR")       
+  koina::prosit2019IrtEnsemble("LGGNEQVTR")       
 
 }
