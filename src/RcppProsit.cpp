@@ -63,6 +63,7 @@ Rcpp::DataFrame extractPrositPredictedSpectrum(float* output0_data, float* outpu
 //' of a given peptide sequence.
 //'
 //' @inheritParams alphaPeptMs2GenericEnsemble
+//' @params usesll usessl default is set to false
 //'
 //' @examples
 //'
@@ -77,6 +78,7 @@ Rcpp::List prosit2019Intensity(
   Rcpp::NumericVector collisionEnergy,
   Rcpp::NumericVector precursorCharge,
   bool verbose = false,
+  bool usessl = false,
   std::string url = "dlomix.fgcz.uzh.ch:8080")
 {
   long int batch_size = 5000;
@@ -90,7 +92,7 @@ Rcpp::List prosit2019Intensity(
   
   tc::Headers http_headers;
   uint32_t client_timeout = 0;
-  bool use_ssl = false;
+  bool use_ssl = usessl;
   tc::SslOptions ssl_options;
   tc::KeepAliveOptions keepalive_options;
 

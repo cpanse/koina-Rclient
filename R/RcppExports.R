@@ -28,6 +28,7 @@ alphaPeptMs2GenericEnsemble <- function(peptide, collisionEnergy = 0.25, precurs
 #' of a given peptide sequence.
 #'
 #' @inheritParams alphaPeptMs2GenericEnsemble
+#' @params usesll usessl default is set to false
 #'
 #' @examples
 #'
@@ -36,8 +37,8 @@ alphaPeptMs2GenericEnsemble <- function(peptide, collisionEnergy = 0.25, precurs
 #'    url = "dlomix.fgcz.uzh.ch:8080") |> head()
 #' 
 #' @export
-prosit2019Intensity <- function(peptide, collisionEnergy, precursorCharge, verbose = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
-    .Call(`_dlomix_prosit2019Intensity`, peptide, collisionEnergy, precursorCharge, verbose, url)
+prosit2019Intensity <- function(peptide, collisionEnergy, precursorCharge, verbose = FALSE, usessl = FALSE, url = "dlomix.fgcz.uzh.ch:8080") {
+    .Call(`_dlomix_prosit2019Intensity`, peptide, collisionEnergy, precursorCharge, verbose, usessl, url)
 }
 
 #' Prosit_2019_irt_ensemble
